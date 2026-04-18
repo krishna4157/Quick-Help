@@ -1,0 +1,406 @@
+diff --git a/node_modules/expo-firebase-core/android/build.gradle b/node_modules/expo-firebase-core/android/build.gradle
+index 9bda09b..5ccd1bb 100644
+--- a/node_modules/expo-firebase-core/android/build.gradle
++++ b/node_modules/expo-firebase-core/android/build.gradle
+@@ -37,8 +37,8 @@ buildscript {
+ 
+ // Creating sources with comments
+ task androidSourcesJar(type: Jar) {
+-  classifier = 'sources'
+-  from android.sourceSets.main.java.srcDirs
++    archiveClassifier = 'sources' // Changed from 'classifier' to 'archiveClassifier'
++    from android.sourceSets.main.java.srcDirs
+ }
+ 
+ afterEvaluate {
+diff --git a/node_modules/expo-firebase-core/android/build/.transforms/0f562360082135538742ffd6c7d76548/results.bin b/node_modules/expo-firebase-core/android/build/.transforms/0f562360082135538742ffd6c7d76548/results.bin
+new file mode 100644
+index 0000000..0d259dd
+--- /dev/null
++++ b/node_modules/expo-firebase-core/android/build/.transforms/0f562360082135538742ffd6c7d76548/results.bin
+@@ -0,0 +1 @@
++o/classes
+diff --git a/node_modules/expo-firebase-core/android/build/.transforms/0f562360082135538742ffd6c7d76548/transformed/classes/classes_dex/classes.dex b/node_modules/expo-firebase-core/android/build/.transforms/0f562360082135538742ffd6c7d76548/transformed/classes/classes_dex/classes.dex
+new file mode 100644
+index 0000000..0e63963
+Binary files /dev/null and b/node_modules/expo-firebase-core/android/build/.transforms/0f562360082135538742ffd6c7d76548/transformed/classes/classes_dex/classes.dex differ
+diff --git a/node_modules/expo-firebase-core/android/build/.transforms/6f266339ddf066694aafac17f7a0a4f0/results.bin b/node_modules/expo-firebase-core/android/build/.transforms/6f266339ddf066694aafac17f7a0a4f0/results.bin
+new file mode 100644
+index 0000000..0d259dd
+--- /dev/null
++++ b/node_modules/expo-firebase-core/android/build/.transforms/6f266339ddf066694aafac17f7a0a4f0/results.bin
+@@ -0,0 +1 @@
++o/classes
+diff --git a/node_modules/expo-firebase-core/android/build/.transforms/6f266339ddf066694aafac17f7a0a4f0/transformed/classes/classes_dex/classes.dex b/node_modules/expo-firebase-core/android/build/.transforms/6f266339ddf066694aafac17f7a0a4f0/transformed/classes/classes_dex/classes.dex
+new file mode 100644
+index 0000000..4dccda9
+Binary files /dev/null and b/node_modules/expo-firebase-core/android/build/.transforms/6f266339ddf066694aafac17f7a0a4f0/transformed/classes/classes_dex/classes.dex differ
+diff --git a/node_modules/expo-firebase-core/android/build/generated/source/buildConfig/debug/expo/modules/firebase/core/BuildConfig.java b/node_modules/expo-firebase-core/android/build/generated/source/buildConfig/debug/expo/modules/firebase/core/BuildConfig.java
+new file mode 100644
+index 0000000..a959015
+--- /dev/null
++++ b/node_modules/expo-firebase-core/android/build/generated/source/buildConfig/debug/expo/modules/firebase/core/BuildConfig.java
+@@ -0,0 +1,10 @@
++/**
++ * Automatically generated file. DO NOT MODIFY
++ */
++package expo.modules.firebase.core;
++
++public final class BuildConfig {
++  public static final boolean DEBUG = Boolean.parseBoolean("true");
++  public static final String LIBRARY_PACKAGE_NAME = "expo.modules.firebase.core";
++  public static final String BUILD_TYPE = "debug";
++}
+diff --git a/node_modules/expo-firebase-core/android/build/intermediates/aapt_friendly_merged_manifests/debug/processDebugManifest/aapt/AndroidManifest.xml b/node_modules/expo-firebase-core/android/build/intermediates/aapt_friendly_merged_manifests/debug/processDebugManifest/aapt/AndroidManifest.xml
+new file mode 100644
+index 0000000..c8af993
+--- /dev/null
++++ b/node_modules/expo-firebase-core/android/build/intermediates/aapt_friendly_merged_manifests/debug/processDebugManifest/aapt/AndroidManifest.xml
+@@ -0,0 +1,7 @@
++<?xml version="1.0" encoding="utf-8"?>
++<manifest xmlns:android="http://schemas.android.com/apk/res/android"
++    package="expo.modules.firebase.core" >
++
++    <uses-sdk android:minSdkVersion="24" />
++
++</manifest>
+\ No newline at end of file
+diff --git a/node_modules/expo-firebase-core/android/build/intermediates/aapt_friendly_merged_manifests/debug/processDebugManifest/aapt/output-metadata.json b/node_modules/expo-firebase-core/android/build/intermediates/aapt_friendly_merged_manifests/debug/processDebugManifest/aapt/output-metadata.json
+new file mode 100644
+index 0000000..6f8de6c
+--- /dev/null
++++ b/node_modules/expo-firebase-core/android/build/intermediates/aapt_friendly_merged_manifests/debug/processDebugManifest/aapt/output-metadata.json
+@@ -0,0 +1,18 @@
++{
++  "version": 3,
++  "artifactType": {
++    "type": "AAPT_FRIENDLY_MERGED_MANIFESTS",
++    "kind": "Directory"
++  },
++  "applicationId": "expo.modules.firebase.core",
++  "variantName": "debug",
++  "elements": [
++    {
++      "type": "SINGLE",
++      "filters": [],
++      "attributes": [],
++      "outputFile": "AndroidManifest.xml"
++    }
++  ],
++  "elementType": "File"
++}
+\ No newline at end of file
+diff --git a/node_modules/expo-firebase-core/android/build/intermediates/aar_metadata/debug/writeDebugAarMetadata/aar-metadata.properties b/node_modules/expo-firebase-core/android/build/intermediates/aar_metadata/debug/writeDebugAarMetadata/aar-metadata.properties
+new file mode 100644
+index 0000000..1211b1e
+--- /dev/null
++++ b/node_modules/expo-firebase-core/android/build/intermediates/aar_metadata/debug/writeDebugAarMetadata/aar-metadata.properties
+@@ -0,0 +1,6 @@
++aarFormatVersion=1.0
++aarMetadataVersion=1.0
++minCompileSdk=1
++minCompileSdkExtension=0
++minAndroidGradlePluginVersion=1.0.0
++coreLibraryDesugaringEnabled=false
+diff --git a/node_modules/expo-firebase-core/android/build/intermediates/annotation_processor_list/debug/javaPreCompileDebug/annotationProcessors.json b/node_modules/expo-firebase-core/android/build/intermediates/annotation_processor_list/debug/javaPreCompileDebug/annotationProcessors.json
+new file mode 100644
+index 0000000..9e26dfe
+--- /dev/null
++++ b/node_modules/expo-firebase-core/android/build/intermediates/annotation_processor_list/debug/javaPreCompileDebug/annotationProcessors.json
+@@ -0,0 +1 @@
++{}
+\ No newline at end of file
+diff --git a/node_modules/expo-firebase-core/android/build/intermediates/compile_library_classes_jar/debug/bundleLibCompileToJarDebug/classes.jar b/node_modules/expo-firebase-core/android/build/intermediates/compile_library_classes_jar/debug/bundleLibCompileToJarDebug/classes.jar
+new file mode 100644
+index 0000000..9e61ffc
+Binary files /dev/null and b/node_modules/expo-firebase-core/android/build/intermediates/compile_library_classes_jar/debug/bundleLibCompileToJarDebug/classes.jar differ
+diff --git a/node_modules/expo-firebase-core/android/build/intermediates/compile_r_class_jar/debug/generateDebugRFile/R.jar b/node_modules/expo-firebase-core/android/build/intermediates/compile_r_class_jar/debug/generateDebugRFile/R.jar
+new file mode 100644
+index 0000000..0228291
+Binary files /dev/null and b/node_modules/expo-firebase-core/android/build/intermediates/compile_r_class_jar/debug/generateDebugRFile/R.jar differ
+diff --git a/node_modules/expo-firebase-core/android/build/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt b/node_modules/expo-firebase-core/android/build/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/expo-firebase-core/android/build/intermediates/incremental/debug/packageDebugResources/compile-file-map.properties b/node_modules/expo-firebase-core/android/build/intermediates/incremental/debug/packageDebugResources/compile-file-map.properties
+new file mode 100644
+index 0000000..857f264
+--- /dev/null
++++ b/node_modules/expo-firebase-core/android/build/intermediates/incremental/debug/packageDebugResources/compile-file-map.properties
+@@ -0,0 +1 @@
++#Fri Apr 17 23:32:07 IST 2026
+diff --git a/node_modules/expo-firebase-core/android/build/intermediates/incremental/debug/packageDebugResources/merger.xml b/node_modules/expo-firebase-core/android/build/intermediates/incremental/debug/packageDebugResources/merger.xml
+new file mode 100644
+index 0000000..b848240
+--- /dev/null
++++ b/node_modules/expo-firebase-core/android/build/intermediates/incremental/debug/packageDebugResources/merger.xml
+@@ -0,0 +1,2 @@
++<?xml version="1.0" encoding="utf-8"?>
++<merger version="3"><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="main$Generated" generated="true" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="D:\PROJECT_DELIVERY\DeliveryApp\node_modules\expo-firebase-core\android\src\main\res"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="main" generated-set="main$Generated" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="D:\PROJECT_DELIVERY\DeliveryApp\node_modules\expo-firebase-core\android\src\main\res"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="debug$Generated" generated="true" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="D:\PROJECT_DELIVERY\DeliveryApp\node_modules\expo-firebase-core\android\src\debug\res"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="debug" generated-set="debug$Generated" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="D:\PROJECT_DELIVERY\DeliveryApp\node_modules\expo-firebase-core\android\src\debug\res"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="generated$Generated" generated="true" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="D:\PROJECT_DELIVERY\DeliveryApp\node_modules\expo-firebase-core\android\build\generated\res\resValues\debug"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="generated" generated-set="generated$Generated" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="D:\PROJECT_DELIVERY\DeliveryApp\node_modules\expo-firebase-core\android\build\generated\res\resValues\debug"/></dataSet><mergedItems/></merger>
+\ No newline at end of file
+diff --git a/node_modules/expo-firebase-core/android/build/intermediates/incremental/mergeDebugAssets/merger.xml b/node_modules/expo-firebase-core/android/build/intermediates/incremental/mergeDebugAssets/merger.xml
+new file mode 100644
+index 0000000..b0556aa
+--- /dev/null
++++ b/node_modules/expo-firebase-core/android/build/intermediates/incremental/mergeDebugAssets/merger.xml
+@@ -0,0 +1,2 @@
++<?xml version="1.0" encoding="utf-8"?>
++<merger version="3"><dataSet config="main" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="D:\PROJECT_DELIVERY\DeliveryApp\node_modules\expo-firebase-core\android\src\main\assets"/></dataSet><dataSet config="debug" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="D:\PROJECT_DELIVERY\DeliveryApp\node_modules\expo-firebase-core\android\src\debug\assets"/></dataSet><dataSet config="generated" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="D:\PROJECT_DELIVERY\DeliveryApp\node_modules\expo-firebase-core\android\build\intermediates\shader_assets\debug\compileDebugShaders\out"/></dataSet></merger>
+\ No newline at end of file
+diff --git a/node_modules/expo-firebase-core/android/build/intermediates/incremental/mergeDebugJniLibFolders/merger.xml b/node_modules/expo-firebase-core/android/build/intermediates/incremental/mergeDebugJniLibFolders/merger.xml
+new file mode 100644
+index 0000000..7d4eaaa
+--- /dev/null
++++ b/node_modules/expo-firebase-core/android/build/intermediates/incremental/mergeDebugJniLibFolders/merger.xml
+@@ -0,0 +1,2 @@
++<?xml version="1.0" encoding="utf-8"?>
++<merger version="3"><dataSet config="main" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="D:\PROJECT_DELIVERY\DeliveryApp\node_modules\expo-firebase-core\android\src\main\jniLibs"/></dataSet><dataSet config="debug" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="D:\PROJECT_DELIVERY\DeliveryApp\node_modules\expo-firebase-core\android\src\debug\jniLibs"/></dataSet></merger>
+\ No newline at end of file
+diff --git a/node_modules/expo-firebase-core/android/build/intermediates/incremental/mergeDebugShaders/merger.xml b/node_modules/expo-firebase-core/android/build/intermediates/incremental/mergeDebugShaders/merger.xml
+new file mode 100644
+index 0000000..0f355b7
+--- /dev/null
++++ b/node_modules/expo-firebase-core/android/build/intermediates/incremental/mergeDebugShaders/merger.xml
+@@ -0,0 +1,2 @@
++<?xml version="1.0" encoding="utf-8"?>
++<merger version="3"><dataSet config="main" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="D:\PROJECT_DELIVERY\DeliveryApp\node_modules\expo-firebase-core\android\src\main\shaders"/></dataSet><dataSet config="debug" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="D:\PROJECT_DELIVERY\DeliveryApp\node_modules\expo-firebase-core\android\src\debug\shaders"/></dataSet></merger>
+\ No newline at end of file
+diff --git a/node_modules/expo-firebase-core/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/expo/modules/firebase/core/BuildConfig.class b/node_modules/expo-firebase-core/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/expo/modules/firebase/core/BuildConfig.class
+new file mode 100644
+index 0000000..5731a72
+Binary files /dev/null and b/node_modules/expo-firebase-core/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/expo/modules/firebase/core/BuildConfig.class differ
+diff --git a/node_modules/expo-firebase-core/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/expo/modules/firebase/core/FirebaseCoreInterface.class b/node_modules/expo-firebase-core/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/expo/modules/firebase/core/FirebaseCoreInterface.class
+new file mode 100644
+index 0000000..2b10996
+Binary files /dev/null and b/node_modules/expo-firebase-core/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/expo/modules/firebase/core/FirebaseCoreInterface.class differ
+diff --git a/node_modules/expo-firebase-core/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/expo/modules/firebase/core/FirebaseCoreModule.class b/node_modules/expo-firebase-core/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/expo/modules/firebase/core/FirebaseCoreModule.class
+new file mode 100644
+index 0000000..2af0d59
+Binary files /dev/null and b/node_modules/expo-firebase-core/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/expo/modules/firebase/core/FirebaseCoreModule.class differ
+diff --git a/node_modules/expo-firebase-core/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/expo/modules/firebase/core/FirebaseCoreOptions.class b/node_modules/expo-firebase-core/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/expo/modules/firebase/core/FirebaseCoreOptions.class
+new file mode 100644
+index 0000000..671fa94
+Binary files /dev/null and b/node_modules/expo-firebase-core/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/expo/modules/firebase/core/FirebaseCoreOptions.class differ
+diff --git a/node_modules/expo-firebase-core/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/expo/modules/firebase/core/FirebaseCorePackage.class b/node_modules/expo-firebase-core/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/expo/modules/firebase/core/FirebaseCorePackage.class
+new file mode 100644
+index 0000000..834651e
+Binary files /dev/null and b/node_modules/expo-firebase-core/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/expo/modules/firebase/core/FirebaseCorePackage.class differ
+diff --git a/node_modules/expo-firebase-core/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/expo/modules/firebase/core/FirebaseCoreService.class b/node_modules/expo-firebase-core/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/expo/modules/firebase/core/FirebaseCoreService.class
+new file mode 100644
+index 0000000..1599b57
+Binary files /dev/null and b/node_modules/expo-firebase-core/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/expo/modules/firebase/core/FirebaseCoreService.class differ
+diff --git a/node_modules/expo-firebase-core/android/build/intermediates/local_only_symbol_list/debug/parseDebugLocalResources/R-def.txt b/node_modules/expo-firebase-core/android/build/intermediates/local_only_symbol_list/debug/parseDebugLocalResources/R-def.txt
+new file mode 100644
+index 0000000..78ac5b8
+--- /dev/null
++++ b/node_modules/expo-firebase-core/android/build/intermediates/local_only_symbol_list/debug/parseDebugLocalResources/R-def.txt
+@@ -0,0 +1,2 @@
++R_DEF: Internal format may change without notice
++local
+diff --git a/node_modules/expo-firebase-core/android/build/intermediates/manifest_merge_blame_file/debug/processDebugManifest/manifest-merger-blame-debug-report.txt b/node_modules/expo-firebase-core/android/build/intermediates/manifest_merge_blame_file/debug/processDebugManifest/manifest-merger-blame-debug-report.txt
+new file mode 100644
+index 0000000..5cb466c
+--- /dev/null
++++ b/node_modules/expo-firebase-core/android/build/intermediates/manifest_merge_blame_file/debug/processDebugManifest/manifest-merger-blame-debug-report.txt
+@@ -0,0 +1,7 @@
++1<?xml version="1.0" encoding="utf-8"?>
++2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
++3    package="expo.modules.firebase.core" >
++4
++5    <uses-sdk android:minSdkVersion="24" />
++6
++7</manifest>
+diff --git a/node_modules/expo-firebase-core/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml b/node_modules/expo-firebase-core/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml
+new file mode 100644
+index 0000000..c8af993
+--- /dev/null
++++ b/node_modules/expo-firebase-core/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml
+@@ -0,0 +1,7 @@
++<?xml version="1.0" encoding="utf-8"?>
++<manifest xmlns:android="http://schemas.android.com/apk/res/android"
++    package="expo.modules.firebase.core" >
++
++    <uses-sdk android:minSdkVersion="24" />
++
++</manifest>
+\ No newline at end of file
+diff --git a/node_modules/expo-firebase-core/android/build/intermediates/navigation_json/debug/extractDeepLinksDebug/navigation.json b/node_modules/expo-firebase-core/android/build/intermediates/navigation_json/debug/extractDeepLinksDebug/navigation.json
+new file mode 100644
+index 0000000..0637a08
+--- /dev/null
++++ b/node_modules/expo-firebase-core/android/build/intermediates/navigation_json/debug/extractDeepLinksDebug/navigation.json
+@@ -0,0 +1 @@
++[]
+\ No newline at end of file
+diff --git a/node_modules/expo-firebase-core/android/build/intermediates/nested_resources_validation_report/debug/generateDebugResources/nestedResourcesValidationReport.txt b/node_modules/expo-firebase-core/android/build/intermediates/nested_resources_validation_report/debug/generateDebugResources/nestedResourcesValidationReport.txt
+new file mode 100644
+index 0000000..08f4ebe
+--- /dev/null
++++ b/node_modules/expo-firebase-core/android/build/intermediates/nested_resources_validation_report/debug/generateDebugResources/nestedResourcesValidationReport.txt
+@@ -0,0 +1 @@
++0 Warning/Error
+\ No newline at end of file
+diff --git a/node_modules/expo-firebase-core/android/build/intermediates/runtime_library_classes_jar/debug/bundleLibRuntimeToJarDebug/classes.jar b/node_modules/expo-firebase-core/android/build/intermediates/runtime_library_classes_jar/debug/bundleLibRuntimeToJarDebug/classes.jar
+new file mode 100644
+index 0000000..90b9830
+Binary files /dev/null and b/node_modules/expo-firebase-core/android/build/intermediates/runtime_library_classes_jar/debug/bundleLibRuntimeToJarDebug/classes.jar differ
+diff --git a/node_modules/expo-firebase-core/android/build/intermediates/symbol_list_with_package_name/debug/generateDebugRFile/package-aware-r.txt b/node_modules/expo-firebase-core/android/build/intermediates/symbol_list_with_package_name/debug/generateDebugRFile/package-aware-r.txt
+new file mode 100644
+index 0000000..18552e1
+--- /dev/null
++++ b/node_modules/expo-firebase-core/android/build/intermediates/symbol_list_with_package_name/debug/generateDebugRFile/package-aware-r.txt
+@@ -0,0 +1 @@
++expo.modules.firebase.core
+diff --git a/node_modules/expo-firebase-core/android/build/outputs/logs/manifest-merger-debug-report.txt b/node_modules/expo-firebase-core/android/build/outputs/logs/manifest-merger-debug-report.txt
+new file mode 100644
+index 0000000..56f8a94
+--- /dev/null
++++ b/node_modules/expo-firebase-core/android/build/outputs/logs/manifest-merger-debug-report.txt
+@@ -0,0 +1,15 @@
++-- Merging decision tree log ---
++manifest
++ADDED from D:\PROJECT_DELIVERY\DeliveryApp\node_modules\expo-firebase-core\android\src\main\AndroidManifest.xml:1:1-3:12
++INJECTED from D:\PROJECT_DELIVERY\DeliveryApp\node_modules\expo-firebase-core\android\src\main\AndroidManifest.xml:1:1-3:12
++	package
++		ADDED from D:\PROJECT_DELIVERY\DeliveryApp\node_modules\expo-firebase-core\android\src\main\AndroidManifest.xml:1:11-47
++		INJECTED from D:\PROJECT_DELIVERY\DeliveryApp\node_modules\expo-firebase-core\android\src\main\AndroidManifest.xml
++uses-sdk
++INJECTED from D:\PROJECT_DELIVERY\DeliveryApp\node_modules\expo-firebase-core\android\src\main\AndroidManifest.xml reason: use-sdk injection requested
++INJECTED from D:\PROJECT_DELIVERY\DeliveryApp\node_modules\expo-firebase-core\android\src\main\AndroidManifest.xml
++INJECTED from D:\PROJECT_DELIVERY\DeliveryApp\node_modules\expo-firebase-core\android\src\main\AndroidManifest.xml
++	android:targetSdkVersion
++		INJECTED from D:\PROJECT_DELIVERY\DeliveryApp\node_modules\expo-firebase-core\android\src\main\AndroidManifest.xml
++	android:minSdkVersion
++		INJECTED from D:\PROJECT_DELIVERY\DeliveryApp\node_modules\expo-firebase-core\android\src\main\AndroidManifest.xml
+diff --git a/node_modules/expo-firebase-core/android/build/tmp/compileDebugJavaWithJavac/compileTransaction/stash-dir/FirebaseCoreModule.class.uniqueId1 b/node_modules/expo-firebase-core/android/build/tmp/compileDebugJavaWithJavac/compileTransaction/stash-dir/FirebaseCoreModule.class.uniqueId1
+new file mode 100644
+index 0000000..ef2db69
+Binary files /dev/null and b/node_modules/expo-firebase-core/android/build/tmp/compileDebugJavaWithJavac/compileTransaction/stash-dir/FirebaseCoreModule.class.uniqueId1 differ
+diff --git a/node_modules/expo-firebase-core/android/build/tmp/compileDebugJavaWithJavac/compileTransaction/stash-dir/FirebaseCorePackage.class.uniqueId0 b/node_modules/expo-firebase-core/android/build/tmp/compileDebugJavaWithJavac/compileTransaction/stash-dir/FirebaseCorePackage.class.uniqueId0
+new file mode 100644
+index 0000000..834651e
+Binary files /dev/null and b/node_modules/expo-firebase-core/android/build/tmp/compileDebugJavaWithJavac/compileTransaction/stash-dir/FirebaseCorePackage.class.uniqueId0 differ
+diff --git a/node_modules/expo-firebase-core/android/build/tmp/compileDebugJavaWithJavac/previous-compilation-data.bin b/node_modules/expo-firebase-core/android/build/tmp/compileDebugJavaWithJavac/previous-compilation-data.bin
+new file mode 100644
+index 0000000..218ce58
+Binary files /dev/null and b/node_modules/expo-firebase-core/android/build/tmp/compileDebugJavaWithJavac/previous-compilation-data.bin differ
+diff --git a/node_modules/expo-firebase-core/android/src/main/java/expo/modules/firebase/core/FirebaseCoreModule.java b/node_modules/expo-firebase-core/android/src/main/java/expo/modules/firebase/core/FirebaseCoreModule.java
+index 0bb4e53..765d141 100644
+--- a/node_modules/expo-firebase-core/android/src/main/java/expo/modules/firebase/core/FirebaseCoreModule.java
++++ b/node_modules/expo-firebase-core/android/src/main/java/expo/modules/firebase/core/FirebaseCoreModule.java
+@@ -1,58 +1,48 @@
+-// Copyright 2020-present 650 Industries. All rights reserved.
+-
+ package expo.modules.firebase.core;
+ 
+ import android.content.Context;
+-
+-import androidx.annotation.Nullable;
+-
+-import java.util.Map;
+-import java.util.HashMap;
+-
+ import com.google.firebase.FirebaseApp;
+ import com.google.firebase.FirebaseOptions;
++import java.util.HashMap;
++import java.util.Map;
+ 
+-import expo.modules.core.ExportedModule;
++// Use the modern Expo module base instead of ExportedModule
++import expo.modules.core.interfaces.InternalModule;
+ import expo.modules.core.ModuleRegistry;
++import expo.modules.core.interfaces.RegistryLifecycleListener;
+ 
+-public class FirebaseCoreModule extends ExportedModule {
+-  private static final String NAME = "ExpoFirebaseCore";
+-  private static final String DEFAULT_APP_NAME = "[DEFAULT]";
+-
+-  private ModuleRegistry mModuleRegistry;
+-  private Map<String, String> mDefaultOptions;
++public class FirebaseCoreModule implements InternalModule, RegistryLifecycleListener {
++    private static final String NAME = "ExpoFirebaseCore";
++    private static final String DEFAULT_APP_NAME = "[DEFAULT]";
++    private ModuleRegistry mModuleRegistry;
+ 
+-  public FirebaseCoreModule(Context context) {
+-    super(context);
+-  }
++    public FirebaseCoreModule(Context context) {}
+ 
+-  @Nullable
+-  public Map<String, Object> getConstants() {
+-    FirebaseCoreInterface firebaseCore = mModuleRegistry.getModule(FirebaseCoreInterface.class);
+-    FirebaseApp defaultApp = firebaseCore.getDefaultApp();
++    public Map<String, Object> getConstants() {
++        FirebaseCoreInterface firebaseCore = mModuleRegistry.getModule(FirebaseCoreInterface.class);
++        FirebaseApp defaultApp = (firebaseCore != null) ? firebaseCore.getDefaultApp() : null;
+ 
+-    final Map<String, Object> constants = new HashMap<>();
+-    constants.put("DEFAULT_APP_NAME", (defaultApp != null) ? defaultApp.getName() : DEFAULT_APP_NAME);
++        final Map<String, Object> constants = new HashMap<>();
++        constants.put("DEFAULT_APP_NAME", (defaultApp != null) ? defaultApp.getName() : DEFAULT_APP_NAME);
+ 
+-    if (mDefaultOptions == null) {
+-      FirebaseOptions options = (defaultApp != null) ? defaultApp.getOptions() : null;
+-      mDefaultOptions = FirebaseCoreOptions.toJSON(options);
++        if (defaultApp != null) {
++            constants.put("DEFAULT_APP_OPTIONS", FirebaseCoreOptions.toJSON(defaultApp.getOptions()));
++        }
++        return constants;
+     }
+ 
+-    if (mDefaultOptions != null) {
+-      constants.put("DEFAULT_APP_OPTIONS", mDefaultOptions);
++    // @Override
++    public String getName() {
++        return NAME;
+     }
+ 
+-    return constants;
+-  }
+-
+-  @Override
+-  public String getName() {
+-    return NAME;
+-  }
++    @Override
++    public void onCreate(ModuleRegistry moduleRegistry) {
++        mModuleRegistry = moduleRegistry;
++    }
+ 
+-  @Override
+-  public void onCreate(ModuleRegistry moduleRegistry) {
+-    mModuleRegistry = moduleRegistry;
+-  }
++    @Override
++    public java.util.List<Class> getExportedInterfaces() {
++        return java.util.Collections.singletonList(FirebaseCoreModule.class);
++    }
+ }
+\ No newline at end of file
+diff --git a/node_modules/expo-firebase-core/android/src/main/java/expo/modules/firebase/core/FirebaseCorePackage.java b/node_modules/expo-firebase-core/android/src/main/java/expo/modules/firebase/core/FirebaseCorePackage.java
+index 25ca450..4ab749f 100644
+--- a/node_modules/expo-firebase-core/android/src/main/java/expo/modules/firebase/core/FirebaseCorePackage.java
++++ b/node_modules/expo-firebase-core/android/src/main/java/expo/modules/firebase/core/FirebaseCorePackage.java
+@@ -6,17 +6,15 @@ import java.util.Collections;
+ import java.util.List;
+ 
+ import expo.modules.core.BasePackage;
+-import expo.modules.core.ExportedModule;
+ import expo.modules.core.interfaces.InternalModule;
+ 
+ public class FirebaseCorePackage extends BasePackage {
+   @Override
+   public List<InternalModule> createInternalModules(Context context) {
+-    return Collections.singletonList((InternalModule) new FirebaseCoreService(context));
++    // We cast the module to InternalModule because we updated 
++    // FirebaseCoreModule to implement InternalModule in the previous step.
++    return Collections.singletonList((InternalModule) new FirebaseCoreModule(context));
+   }
+   
+-  @Override
+-  public List<ExportedModule> createExportedModules(Context context) {
+-    return Collections.singletonList((ExportedModule) new FirebaseCoreModule(context));
+-  }
++  // The createExportedModules method is deleted because ExportedModule class is missing.
+ }
+\ No newline at end of file

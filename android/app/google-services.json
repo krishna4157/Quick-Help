@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "537567428840",
+    "project_id": "deliveryapp-api-5b082",
+    "storage_bucket": "deliveryapp-api-5b082.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:537567428840:android:d4f88c6173cb87b206c95d",
+        "android_client_info": {
+          "package_name": "com.gks.manpowerdeliveryapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "537567428840-d5gg04dr5uml8pdn3v1d6q63pn67qiqn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDXs_WqZ_Yi-dql6V5JZuzaT6tPTwml458"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "537567428840-d5gg04dr5uml8pdn3v1d6q63pn67qiqn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
