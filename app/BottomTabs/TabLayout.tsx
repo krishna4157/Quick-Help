@@ -288,6 +288,20 @@ export default function TabLayout() {
           ),
         }}
       />
+      {/* <Tabs.Screen
+        component={WalletScreen}
+        name="wallet"
+        options={{
+          title: "Wallet",
+          tabBarIcon: ({ color }) => (
+            <MaterialIcons
+              name="account-balance-wallet"
+              size={28}
+              color={color}
+            />
+          ),
+        }}
+      /> */}
       <Tabs.Screen
         component={ProfileScreen}
         name="profile"

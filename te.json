@@ -80,7 +80,6 @@
     "ios": "iOS",
     "other": "ఇతర"
   },
-
   "speech": {
     "startRecognition": "గుర్తింపు ప్రారంభించండి",
     "startWebSpeech": "గుర్తింపు ప్రారంభించండి (Web Speech API)",
@@ -103,9 +102,7 @@
     "transcribeRecording": "రికార్డింగ్‌ను ట్రాన్‌స్క్రైబ్ చేయండి",
     "transcribeLocal": "స్థానిక en-US ఆడియో ఫైల్‌ను ట్రాన్‌స్క్రైబ్ చేయండి",
     "transcribing": "ట్రాన్‌స్క్రైబ్ చేస్తున్నాము...",
-    "transcribeRemote": "రిమోట్ ఆడియో ఫైల్‌ను ట్రాన్‌స్క్రైబ్ చేయండి",
-    "stopRecognition": "గుర్తింపు ఆపండి",
-    "abortRecognition": "గుర్తింపు రద్దు చేయండి"
+    "transcribeRemote": "రిమోట్ ఆడియో ఫైల్‌ను ట్రాన్‌స్క్రైబ్ చేయండి"
   },
   "common": {
     "requesting": "అభ్యర్థన చేస్తున్నాము...",
@@ -157,5 +154,19 @@
     "invalidEmail": "దయచేసి చెల్లుబాటు అయ్యే ఈమెయిల్ చిరునామాను నమోదు చేయండి.",
     "uploadFailed": "ImgBB కు చిత్రాన్ని అప్‌లోడ్ చేయడం విఫలమైంది.",
     "saveFailed": "ప్రొఫైల్‌ను సేవ్ చేయడం విఫలమైంది."
+  },
+  "schedule": {
+    "additionalInfo": "అదనపు సమాచారం",
+    "back": "వెనక్కి",
+    "proceed": "ముందుకు",
+    "schedule": "షెడ్యూల్"
+  },
+  "service": {
+    "fanRepair": "ఫాన్ సర్వీస్",
+    "included": "ఏమి చేర్చబడింది",
+    "notIncluded": "ఏమి చేర్చబడలేదు",
+    "importantNotes": "ముఖ్య సూచనలు",
+    "highlights": "ఎందుకు మమ్మల్ని ఎంచుకోవాలి",
+    "bookNow": "ఇప్పుడు బుక్ చేయండి"
   }
 }

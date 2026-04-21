@@ -1,5 +1,5 @@
 import { ThemedText } from "@/components/themed-text";
-import { login } from "@/firebaseMethods";
+import { getUserData, login } from "@/firebaseMethods";
 import Loader from "@/Loader";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
@@ -8,7 +8,7 @@ import {
 } from "@react-native-google-signin/google-signin";
 import { useNavigation } from "@react-navigation/native";
 import { Image } from "expo-image";
-import React from "react";
+import React, { useCallback, useContext } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Dimensions,
@@ -20,7 +20,9 @@ import {
   TextInput,
   View,
 } from "react-native";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { PopupContext } from "../PopupProvider";
+import { userActions } from "../store/actions/slices/userSlice";
 import ButtonComponent from "./ButtonComponent";
 const { width, height } = Dimensions.get("window");
 
@@ -36,6 +38,7 @@ const LoginScreen = () => {
   const [loading, setLoading] = React.useState(false);
   const [isRegisterFlow, setIsRegisterFlow] = React.useState(false);
   const ui = useSelector((state: any) => state);
+  const { showPopup } = useContext(PopupContext);
 
   const navigation = useNavigation<any>();
 
@@ -79,16 +82,26 @@ const LoginScreen = () => {
     }
   };
 
-  //
-  const handleLogin = async () => {
-    // Simulate login success, set token
-    try {
-      await AsyncStorage.setItem("userToken", "login-token");
-    } catch (e) {
-      console.error("Failed to set token", e);
-    }
-    navigation.navigate("location-permission");
-  };
+  const dispatch = useDispatch();
+
+  const handleLogin = useCallback(
+    async (firebaseUser: any) => {
+      try {
+        await AsyncStorage.setItem("userToken", "login-token");
+
+        // Fetch and set user data from Firestore to Redux
+        const userData = await getUserData(firebaseUser.uid);
+        if (userData) {
+          dispatch(userActions.setUserData(userData));
+          console.log("User data loaded to Redux:", userData);
+        }
+      } catch (e) {
+        console.error("Failed to set token or load user data", e);
+      }
+      navigation.navigate("location-permission");
+    },
+    [dispatch, navigation],
+  );
 
   const currentLanguage = i18n.language;
   const isEnglish = currentLanguage === "en";
@@ -179,13 +192,19 @@ const LoginScreen = () => {
               <ButtonComponent
                 onPress={() => {
                   if (!userName || !password) {
-                    alert(t("alerts.pleaseEnterUserPassword"));
+                    showPopup("title", t("alerts.pleaseEnterUserPassword"), [
+                      {
+                        title: "OK",
+                        onPress: (e: any) => e.close(),
+                      },
+                    ]);
+                    // alert();
                     return;
                   }
                   setLoading(true);
                   login(userName, password)
                     .then((val) => {
-                      handleLogin();
+                      handleLogin(val);
                       setLoading(false);
                     })
                     .catch((error) => {

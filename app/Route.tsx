@@ -91,12 +91,17 @@ import { KeyboardProvider } from "react-native-keyboard-controller";
 import "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { auth } from "../firebaseConfig";
+import AdminLayout from "./AdminTabs/TabLayout";
 import TabLayout from "./BottomTabs/TabLayout";
+import WalletScreen from "./BottomTabs/wallet";
 import EditProfile from "./edit-profile";
 import LocationPermissionScreen from "./location-permission";
 import LoginScreen from "./login";
 import PhoneLogin from "./loginviaphn";
 import ModalScreen from "./modal";
+import PaymentSuccess from "./payment-success";
+import ScheduleDetails from "./schedule-details";
+import ServiceDetails from "./service-details";
 import ServiceProviders from "./service-providers";
 import WorkerRegistration from "./worker-registration";
 SplashScreen.preventAutoHideAsync();
@@ -173,6 +178,11 @@ export default function RootLayout() {
               options={{ headerShown: false }}
             />
             <Stack.Screen
+              name="admin-layout"
+              component={AdminLayout}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
               component={ModalScreen}
               name="modal"
               options={{ presentation: "modal", headerShown: false }}
@@ -190,6 +200,26 @@ export default function RootLayout() {
             <Stack.Screen
               name="edit-profile"
               component={EditProfile}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="service-details"
+              component={ServiceDetails}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="schedule-details"
+              component={ScheduleDetails}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="wallet"
+              component={WalletScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="payment-success"
+              component={PaymentSuccess}
               options={{ headerShown: false }}
             />
           </Stack.Navigator>

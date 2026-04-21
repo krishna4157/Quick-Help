@@ -4,6 +4,7 @@ const initialState = {
   data: {
     mobileNumber: null,
     biometricEnabled: false,
+    walletBalance: 0,
   },
   loading: false,
   error: null,
@@ -18,6 +19,7 @@ const userSlice = createSlice({
         ...action.payload,
         mobileNumber: action.payload.mobileNumber ?? null,
         biometricEnabled: action.payload.biometricEnabled ?? false,
+        walletBalance: action.payload.walletBalance ?? 0,
       };
       state.error = null;
     },

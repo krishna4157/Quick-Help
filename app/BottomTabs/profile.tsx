@@ -49,6 +49,11 @@ export default function ProfileScreen() {
       name: t("profile.changeLanguageToEnglish"),
       icon: "g-translate",
     },
+    {
+      id: "admin-panel",
+      name: "ADMIN PANEL",
+      icon: "admin-panel-settings",
+    },
     { id: "my-address", name: t("profile.myAddress"), icon: "location-on" },
     {
       id: "biometrics",
@@ -79,6 +84,12 @@ export default function ProfileScreen() {
       case "edit-profile":
         navigation.navigate("edit-profile" as any);
         // Alert.alert("Edit Profile", "Edit profile details");
+        break;
+      case "wallet":
+        navigation.navigate("wallet" as any);
+        break;
+      case "admin-panel":
+        navigation.navigate("admin-layout" as any);
         break;
       case "change-language":
         toggleLanguage();
@@ -161,6 +172,14 @@ export default function ProfileScreen() {
   return (
     <ThemedView style={styles.container}>
       <SafeAreaView edges={["top"]} style={{ flex: 1 }}>
+        <Pressable
+          onPress={() => {
+            //
+            // customAlert("HELLO")
+          }}
+        >
+          <ThemedText>Test Popup</ThemedText>
+        </Pressable>
         {loading && <Loader />}
 
         <FlatList

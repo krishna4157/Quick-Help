@@ -6,7 +6,7 @@ import * as Location from "expo-location";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Alert, Button, StyleSheet, View } from "react-native";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { auth } from "../firebaseConfig";
 import { userActions } from "../store/actions/slices/userSlice";
 
@@ -14,7 +14,18 @@ export default function LocationPermissionScreen() {
   const [loading, setLoading] = useState(false);
   const navigation = useNavigation<any>();
   const dispatch = useDispatch();
+  const reduxUserData = useSelector((state: any) => state.user.data);
   const { t } = useTranslation();
+
+  function generateRandom(length: number) {
+    const chars =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let result = "";
+    for (let i = 0; i < length; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+  }
 
   const requestPermission = async () => {
     setLoading(true);
@@ -47,27 +58,34 @@ export default function LocationPermissionScreen() {
         reverseGeocode[0]?.city ||
         reverseGeocode[0]?.district ||
         "Unknown Location";
-      const currentUser = auth.currentUser;
 
-      // Store user data in Redux
-      const userData = {
-        uid: currentUser?.uid,
-        email: currentUser?.email,
-        displayName: currentUser?.displayName,
-        photoURL: currentUser?.photoURL,
-        mobileNumber: null,
+      // Use persistent pin/referral from Redux, merge location
+      const updatedUserData = {
+        ...reduxUserData,
+        uid: auth.currentUser?.uid,
+        email: auth.currentUser?.email,
+        displayName: auth.currentUser?.displayName,
+        photoURL: auth.currentUser?.photoURL,
+        mobileNumber: reduxUserData?.mobileNumber ?? null,
         location: {
           cityName: cityName,
           latitude: coords.latitude,
           longitude: coords.longitude,
         },
-        biometricEnabled: false,
+        biometricEnabled: reduxUserData?.biometricEnabled ?? false,
+        // pin and referralCode from login/Firestore, not regenerated
       };
 
-      dispatch(userActions.setUserData(userData));
+      dispatch(userActions.setUserData(updatedUserData));
+      console.log(
+        "Updated user data with location (pin/referral persistent):",
+        updatedUserData.pin,
+        updatedUserData.referralCode,
+      );
 
-      // Store location and token in AsyncStorage
+      // Store full user data and location in AsyncStorage (Redux persists too)
       await AsyncStorage.setItem("userToken", "location-granted-token");
+      await AsyncStorage.setItem("userData", JSON.stringify(updatedUserData));
       await AsyncStorage.setItem(
         "userLocation",
         JSON.stringify({

@@ -7,10 +7,10 @@ import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import RootLayout from "./app/Route";
 import store, { persistor } from "./store";
-
 const Stack = createNativeStackNavigator();
 
 import * as Notifications from "expo-notifications";
+import { PopupProvider } from "./PopupProvider";
 
 // This forces the drop-down banner to show even if the app is open
 Notifications.setNotificationHandler({
@@ -26,7 +26,9 @@ export default function App() {
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <NavigationContainer>
-          <RootLayout />
+          <PopupProvider>
+            <RootLayout />
+          </PopupProvider>
         </NavigationContainer>
       </PersistGate>
     </Provider>

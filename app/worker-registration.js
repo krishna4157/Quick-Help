@@ -114,6 +114,7 @@ export default function WorkerRegistration() {
     // setLoading(true);
     const pushToken = await registerForPushNotificationsAsync();
     // alert("hello");
+    console.log("pushToken : ", pushToken);
 
     setLoading(true);
     if (
@@ -218,6 +219,7 @@ export default function WorkerRegistration() {
         email: contactEmail,
         workType,
         experience,
+        assigned: false,
         location: {
           cityName: location,
           latitude: latitude,
@@ -236,8 +238,9 @@ export default function WorkerRegistration() {
 
         //
       };
-
-      await setDoc(doc(db, "providers", userId), workerData);
+      const emailToLowerCase = contactEmail.toLowerCase();
+      alert(JSON.stringify(emailToLowerCase));
+      await setDoc(doc(db, "providers", emailToLowerCase), workerData);
       setLoading(false);
       Alert.alert(t("alerts.success"), t("alerts.profileSavedSuccessfully"));
     } catch (error) {

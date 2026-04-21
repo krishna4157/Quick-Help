@@ -18,7 +18,7 @@ import { getThemeColor } from "@/components/themed-color";
 import Loader from "@/Loader";
 import { ThemedText } from "../components/themed-text";
 import { ThemedView } from "../components/themed-view";
-import getAvailableProviders from "../firebaseMethodsToGetData";
+import { getAvailableProviders } from "../firebaseMethodsToGetData";
 import { triggerTargetedNotifications } from "../firebaseMethodToTriggerTargettedNotifications";
 const { width } = Dimensions.get("window");
 
@@ -60,9 +60,37 @@ const ServiceProviders = () => {
     }
   }, [isFocused]);
 
+  const data = [
+    {
+      id: 1,
+      serviceType: "FAN",
+      workType: "Electrician",
+      orderAdditionalDescription: "bbfbfbb",
+
+      // orderPlaced: "Time",
+      // orderAdditionalDescription: "bbfbfbb",
+      // orderPlaced: "Time",
+    },
+    {
+      id: 1,
+      serviceType: "Light",
+      workType: "Electrician",
+      orderAdditionalDescription: "bbfbfbb",
+
+      // orderPlaced: "Time",
+      // orderAdditionalDescription: "bbfbfbb",
+      // orderPlaced: "Time",
+    },
+  ];
+
   // Render Item for FlatList
   const renderProvider = ({ item }) => (
-    <Pressable onPress={() => alert(`Selected ${item.name}`)}>
+    <Pressable
+      onPress={() => {
+        // alert(`Selected ${item.name}`)
+        navigation.navigate("service-details", { providerId: item.id });
+      }}
+    >
       <ThemedCard style={styles.providerCard}>
         <View style={styles.cardContent}>
           <View style={styles.row}>
@@ -74,7 +102,7 @@ const ServiceProviders = () => {
             />
             <View style={styles.infoColumn}>
               <ThemedText style={{ color: "white" }} type="subtitle">
-                {item.name}
+                {item.serviceType}
               </ThemedText>
               <ThemedText style={{ color: "white" }} type="default">
                 {item.workType}
@@ -86,11 +114,11 @@ const ServiceProviders = () => {
           </View>
           <ThemedText>{t("booking.verified")}</ThemedText>
         </View>
-
+        {/* 
         <Button
           title={t("booking.addToFavorites")}
           onPress={() => alert("Added to favorites")}
-        />
+        /> */}
       </ThemedCard>
     </Pressable>
   );
@@ -109,12 +137,19 @@ const ServiceProviders = () => {
       <Button
         title="trigger all notifications"
         onPress={() => {
-          triggerTargetedNotifications("Care Taker");
+          // setTimeout(() => {
+          triggerTargetedNotifications(
+            undefined,
+            "Urgent Needed",
+            "Need Care Taker",
+          );
+          // }, 5000);
+          // triggerTargetedNotifications("Care Taker");
         }}
       />
       {/* Content */}
       <FlatList
-        data={providers}
+        data={data}
         contentContainerStyle={styles.listContent}
         keyExtractor={(item) => item.id.toString()}
         renderItem={renderProvider}

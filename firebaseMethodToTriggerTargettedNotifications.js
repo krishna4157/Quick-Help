@@ -8,14 +8,19 @@ export const triggerTargetedNotifications = async (
   bodyMessage,
 ) => {
   try {
+    const providersRef = collection(db, "providers");
+
+    let q;
+
     if (targetWorkType === undefined || targetWorkType === null) {
-      console.error("Trigger Failed: targetWorkType is undefined or null.");
-      alert("System Error: Work type is missing.");
-      return;
+      //   console.error("Trigger Failed: targetWorkType is undefined or null.");
+      //   alert("System Error: Work type is missing.");
+      //   return;
+      q = query(providersRef);
+    } else {
+      q = query(providersRef, where("workType", "in", targetWorkType));
     }
     // 1. Query Firestore for specific workers
-    const providersRef = collection(db, "providers");
-    const q = query(providersRef, where("workType", "==", targetWorkType));
     const querySnapshot = await getDocs(q);
 
     if (querySnapshot.empty) {
@@ -30,12 +35,20 @@ export const triggerTargetedNotifications = async (
 
       // Ensure the worker actually has a valid Expo push token
       if (worker.pushToken && worker.pushToken.includes("ExponentPushToken")) {
+        // messages.push({
+        //   to: worker.pushToken,
+        //   sound: "default",
+        //   title: title,
+        //   body: bodyMessage,
+        //   data: { targetType: targetWorkType }, // Optional invisible data
+        // });
         messages.push({
           to: worker.pushToken,
           sound: "default",
-          title: title,
-          body: bodyMessage,
-          data: { targetType: targetWorkType }, // Optional invisible data
+          title: title || "TEST TITLE (IT WORKS!)", // The || forces this text if 'title' is empty
+          body: bodyMessage || "TEST BODY", // The || forces this text if 'body' is empty
+          channelId: "default", // 👈 THIS IS THE MISSING MAGIC KEY FOR ANDROID
+          data: { targetType: targetWorkType },
         });
       }
     });

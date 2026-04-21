@@ -34,10 +34,11 @@ const signup = async (email, password) => {
 const getUserData = async (uid) => {
   const docRef = doc(db, "users", uid);
   const docSnap = await getDoc(docRef);
-  alert("Fetched user data for UID: " + uid);
   if (docSnap.exists()) {
     console.log("User data:", docSnap.data());
+    return { id: uid, ...docSnap.data() };
   }
+  return null;
 };
 
 const login = async (email, password) => {
@@ -67,11 +68,52 @@ const login = async (email, password) => {
 };
 
 const saveUserData = async (user) => {
-  alert("Saving user data for UID: " + user.uid);
-  await setDoc(doc(db, "users", user.uid), {
-    email: user.email,
-    loggedAt: new Date(),
-  });
+  const userRef = doc(db, "users", user.uid);
+
+  // Get existing data
+  const docSnap = await getDoc(userRef);
+  let userData = docSnap.exists() ? docSnap.data() : {};
+
+  // Merge basic info
+  userData.email = user.email;
+  userData.loggedAt = new Date();
+
+  // Generate pin and referralCode only if not present
+  if (!userData.pin) {
+    const pin = Math.floor(Math.random() * 10000)
+      .toString()
+      .padStart(4, "0");
+    userData.pin = pin;
+    console.log("Generated new pin:", pin);
+  }
+
+  if (!userData.referralCode) {
+    const chars =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let referralCode = "";
+    for (let i = 0; i < 6; i++) {
+      referralCode += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    userData.referralCode = referralCode;
+    console.log("Generated new referralCode:", referralCode);
+  }
+
+  // Add walletBalance 250 for new users only
+  if (typeof userData.walletBalance === "undefined") {
+    userData.walletBalance = 250;
+    console.log("Generated new walletBalance: 250 coins");
+  }
+
+  alert(
+    "Saving user data for UID: " +
+      user.uid +
+      " with pin: " +
+      userData.pin +
+      ", referral: " +
+      userData.referralCode,
+  );
+
+  await setDoc(userRef, userData);
 };
 
 export { getUserData, login, logout, saveUserData, signup };

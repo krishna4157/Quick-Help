@@ -154,5 +154,19 @@
     "invalidEmail": "Please enter a valid email address.",
     "uploadFailed": "Failed to upload image to ImgBB.",
     "saveFailed": "Failed to save profile."
+  },
+  "schedule": {
+    "additionalInfo": "Additional Information",
+    "back": "Back",
+    "proceed": "Proceed",
+    "schedule": "Schedule"
+  },
+  "service": {
+    "fanRepair": "Fan Service",
+    "included": "What's Included",
+    "notIncluded": "What's Not Included",
+    "importantNotes": "Important Notes",
+    "highlights": "Why Choose Us",
+    "bookNow": "BOOK NOW"
   }
 }
