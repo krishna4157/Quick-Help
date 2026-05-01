@@ -38,11 +38,11 @@ export default function WalletScreen() {
           <ThemedText style={styles.balanceAmount}>
             {walletBalance.toLocaleString()} coins
           </ThemedText>
-          <View style={styles.balanceInfo}>
+          {/* <View style={styles.balanceInfo}>
             <ThemedText style={styles.balanceInfoText}>
               Tap to add funds
             </ThemedText>
-          </View>
+          </View> */}
         </LinearGradient>
       </View>
 
@@ -58,10 +58,10 @@ export default function WalletScreen() {
       </View>
 
       <View style={styles.actionButtons}>
-        <ThemedCard style={styles.actionButton}>
+        {/* <ThemedCard style={styles.actionButton}>
           <MaterialIcons name="add" size={24} color={tintColor} />
           <ThemedText style={styles.actionLabel}>Add Money</ThemedText>
-        </ThemedCard>
+        </ThemedCard> */}
         <ThemedCard style={styles.actionButton}>
           <MaterialIcons name="payment" size={24} color={tintColor} />
           <ThemedText style={styles.actionLabel}>Payment History</ThemedText>
@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   balanceAmount: {
-    fontSize: 40,
+    fontSize: 30,
     fontWeight: "bold",
     color: "white",
     marginBottom: 10,

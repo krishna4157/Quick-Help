@@ -80,7 +80,7 @@
 //   );
 // }
 import ThemeProvider from "@/app/ThemeProvider";
-import { useColorScheme } from "@/hooks/use-color-scheme";
+import { useColorScheme } from "@/components/themed-color";
 import { useNavigation } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useFonts } from "expo-font";
@@ -90,8 +90,10 @@ import { useEffect, useState } from "react";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useSelector } from "react-redux";
 import { auth } from "../firebaseConfig";
 import AdminLayout from "./AdminTabs/TabLayout";
+import AIAssistantScreen from "./ai-assistant";
 import TabLayout from "./BottomTabs/TabLayout";
 import WalletScreen from "./BottomTabs/wallet";
 import EditProfile from "./edit-profile";
@@ -103,12 +105,15 @@ import PaymentSuccess from "./payment-success";
 import ScheduleDetails from "./schedule-details";
 import ServiceDetails from "./service-details";
 import ServiceProviders from "./service-providers";
+import ServiceRegistration from "./service-registration";
 import WorkerRegistration from "./worker-registration";
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const navigation = useNavigation<any>();
+  const userData = useSelector((state: any) => state.user?.data);
+  const persistedState = useSelector((state: any) => state);
 
   const [loaded, error] = useFonts({
     "Montserrat-ExtraBold": require("../ttf/Montserrat-ExtraBold.ttf"),
@@ -118,6 +123,36 @@ export default function RootLayout() {
 
   const [isAuthChecking, setIsAuthChecking] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [initialRoute, setInitialRoute] = useState<string | undefined>(
+    undefined,
+  );
+
+  // Check for persisted user data to determine initial route
+  useEffect(() => {
+    if (loaded && !isAuthChecking) {
+      // Check if user data exists in persisted Redux state
+      const hasUserData = userData && Object.keys(userData).length > 0;
+      const hasUserId =
+        userData?.uid || userData?.email || userData?.mobileNumber;
+
+      console.log("Checking persisted user data:", userData);
+
+      if (hasUserData && hasUserId) {
+        // User is logged in, go to location-permission (or tab-layout if location exists)
+        if (userData?.location?.latitude && userData?.location?.longitude) {
+          // alert("CALLED");
+          setInitialRoute("tab-layout");
+        } else {
+          setInitialRoute("location-permission");
+        }
+      } else {
+        // No user data, go to login
+        setInitialRoute("login");
+      }
+
+      SplashScreen.hideAsync();
+    }
+  }, [loaded, isAuthChecking, userData]);
 
   // Listen to Firebase Auth state changes
   useEffect(() => {
@@ -131,22 +166,12 @@ export default function RootLayout() {
   // Hide splash screen when fonts and auth check are done
   useEffect(() => {
     if ((loaded || error) && !isAuthChecking) {
-      SplashScreen.hideAsync();
+      // Don't hide here, we handle it in the other effect after checking user data
     }
   }, [loaded, error, isAuthChecking]);
 
-  // Navigate to correct screen based on auth status
-  // useEffect(() => {
-  //   if (!loaded || isAuthChecking) return;
-
-  //   if (isAuthenticated) {
-  //     navigation.navigate("location-permission");
-  //   } else {
-  //     navigation.navigate("login");
-  //   }
-  // }, [loaded, isAuthChecking, isAuthenticated]);
-
-  if (!loaded || isAuthChecking) {
+  // Don't render navigator until fonts loaded, auth checked, AND initial route determined
+  if (!loaded || isAuthChecking || !initialRoute) {
     return null;
   }
 
@@ -156,7 +181,7 @@ export default function RootLayout() {
     <SafeAreaView edges={["top", "bottom"]} style={{ flex: 1 }}>
       <KeyboardProvider>
         <ThemeProvider>
-          <Stack.Navigator initialRouteName="login">
+          <Stack.Navigator initialRouteName={initialRoute}>
             <Stack.Screen
               name="login"
               component={LoginScreen}
@@ -221,6 +246,20 @@ export default function RootLayout() {
               name="payment-success"
               component={PaymentSuccess}
               options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="service-registration"
+              component={ServiceRegistration}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="ai-assistant"
+              component={AIAssistantScreen}
+              options={{
+                headerShown: false,
+                animation: "fade",
+                animationDuration: 300,
+              }}
             />
           </Stack.Navigator>
         </ThemeProvider>

@@ -39,7 +39,7 @@ export async function registerForPushNotificationsAsync() {
         console.error("Error getting Expo push token:", error);
       })
     ).data;
-    alert("hello");
+    // alert("hello");
   } else {
     console.log("Must use physical device for Push Notifications");
   }

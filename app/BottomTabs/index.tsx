@@ -759,7 +759,6 @@
 // expo start --dev-client
 
 // */
-import { HelloWave } from "@/components/hello-wave";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { TranscribeLocalAudioFileDemo } from "@/components/TranscribeLocalAudioFileDemo";
@@ -777,6 +776,7 @@ import { useThemeColor } from "@/hooks/use-theme-color";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Paths } from "expo-file-system";
 import { ImageBackground } from "expo-image";
+import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "expo-router";
 import type {
   AndroidIntentOptions,
@@ -792,18 +792,16 @@ import {
   AVAudioSessionCategoryOptions,
   AVAudioSessionMode,
   ExpoSpeechRecognitionModule,
-  SpeechRecognizerErrorAndroid,
   TaskHintIOS,
   useSpeechRecognitionEvent,
 } from "expo-speech-recognition";
 import { StatusBar } from "expo-status-bar";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Alert,
   Animated,
   Dimensions,
-  FlatList,
   Platform,
   Pressable,
   ScrollView,
@@ -852,65 +850,65 @@ const HomeScreen = () => {
     },
   });
 
-  useSpeechRecognitionEvent("result", (ev) => {
-    console.log("[event]: result", {
-      isFinal: ev.isFinal,
-      transcripts: ev.results.map((result) => {
-        setSearchQuery(result.transcript);
-        return searchQuery + result.transcript;
-      }),
-    });
+  // useSpeechRecognitionEvent("result", (ev) => {
+  //   console.log("[event]: result", {
+  //     isFinal: ev.isFinal,
+  //     transcripts: ev.results.map((result) => {
+  //       setSearchQuery(result.transcript);
+  //       return searchQuery + result.transcript;
+  //     }),
+  //   });
 
-    const transcript = ev.results[0]?.transcript || "";
+  //   const transcript = ev.results[0]?.transcript || "";
 
-    if (ev.isFinal) {
-      // When a final result is received, any following result events will include a new transcript
-      // So we need to keep a tally of the current transcript so we can append it to the following result events
-      transcriptTallyRef.current += transcript;
-      setTranscription(transcriptTallyRef.current);
-    } else {
-      setTranscription(transcriptTallyRef.current + transcript);
-    }
-  });
+  //   if (ev.isFinal) {
+  //     // When a final result is received, any following result events will include a new transcript
+  //     // So we need to keep a tally of the current transcript so we can append it to the following result events
+  //     transcriptTallyRef.current += transcript;
+  //     setTranscription(transcriptTallyRef.current);
+  //   } else {
+  //     setTranscription(transcriptTallyRef.current + transcript);
+  //   }
+  // });
 
-  useSpeechRecognitionEvent("start", () => {
-    transcriptTallyRef.current = "";
-    setTranscription("");
-    setStatus("recognizing");
-  });
+  // useSpeechRecognitionEvent("start", () => {
+  //   transcriptTallyRef.current = "";
+  //   setTranscription("");
+  //   setStatus("recognizing");
+  // });
 
-  useSpeechRecognitionEvent("end", () => {
-    console.log("[event]: end");
-    setStatus("idle");
-  });
+  // useSpeechRecognitionEvent("end", () => {
+  //   console.log("[event]: end");
+  //   setStatus("idle");
+  // });
 
-  useSpeechRecognitionEvent("error", (ev) => {
-    console.log(
-      "[event]: error",
-      ev.error,
-      ev.message,
-      ev.code ? `code: ${ev.code}` : "",
-    );
+  // useSpeechRecognitionEvent("error", (ev) => {
+  //   console.log(
+  //     "[event]: error",
+  //     ev.error,
+  //     ev.message,
+  //     ev.code ? `code: ${ev.code}` : "",
+  //   );
 
-    switch (ev.code) {
-      case SpeechRecognizerErrorAndroid.ERROR_NETWORK_TIMEOUT:
-        break;
-      case SpeechRecognizerErrorAndroid.ERROR_TOO_MANY_REQUESTS:
-        break;
-      case -1:
-        break;
-    }
+  //   switch (ev.code) {
+  //     case SpeechRecognizerErrorAndroid.ERROR_NETWORK_TIMEOUT:
+  //       break;
+  //     case SpeechRecognizerErrorAndroid.ERROR_TOO_MANY_REQUESTS:
+  //       break;
+  //     case -1:
+  //       break;
+  //   }
 
-    setError(ev);
-  });
+  //   setError(ev);
+  // });
 
-  useSpeechRecognitionEvent("nomatch", () => {
-    console.log("[event]: nomatch");
-  });
+  // useSpeechRecognitionEvent("nomatch", () => {
+  //   console.log("[event]: nomatch");
+  // });
 
-  useSpeechRecognitionEvent("languagedetection", (ev) => {
-    console.log("[event]: languagedetection", ev);
-  });
+  // useSpeechRecognitionEvent("languagedetection", (ev) => {
+  //   console.log("[event]: languagedetection", ev);
+  // });
 
   const startListening = async () => {
     if (status !== "idle") {
@@ -967,37 +965,332 @@ const HomeScreen = () => {
   const width = Dimensions.get("window").width;
   const { t, i18n } = useTranslation();
   const userData = useSelector((state: any) => state.user.data);
-  alert(JSON.stringify(userData));
+  // alert(JSON.stringify(userData));
+  // const AVAILABLE_SERVICES = [
+  //   {
+  //     id: "1",
+  //     title: t("home.electricalServices"),
+  //     category: "Electrical Services",
+  //     image: require("../../CARD_IMAGES/ElectricServices.webp"),
+  //     gradientColors: ["#f59e0b", "#d97706"] as const,
+  //     imageOpacity: 0.85,
+  //   },
+  //   {
+  //     id: "2",
+  //     title: t("home.plumbingServices"),
+  //     category: "Plumbing Services",
+  //     image: require("../../CARD_IMAGES/PlumberServices.webp"),
+  //     gradientColors: ["#06b6d4", "#0891b2"] as const,
+  //     imageOpacity: 0.85,
+  //   },
+  //   {
+  //     id: "3",
+  //     title: t("home.beautyServices"),
+  //     category: "Beauty Services",
+  //     image: require("../../CARD_IMAGES/BeautyServices.webp"),
+  //     gradientColors: ["#ec4899", "#db2777"] as const,
+  //     imageOpacity: 0.75,
+  //   },
+  //   {
+  //     id: "4",
+  //     title: t("home.laundryServices"),
+  //     category: "Laundry Services",
+  //     image: require("../../CARD_IMAGES/LaundryServices.webp"),
+  //     gradientColors: ["#0ea5e9", "#0284c7"] as const,
+  //     imageOpacity: 0.75,
+  //   },
+  //   {
+  //     id: "5",
+  //     title: t("home.careTakers"),
+  //     category: "Care Takers",
+  //     image: require("../../CARD_IMAGES/CareTakerServices.webp"),
+  //     gradientColors: ["#f43f5e", "#e11d48"] as const,
+  //     imageOpacity: 0.95,
+  //   },
+  //   {
+  //     id: "6",
+  //     title: t("home.homeServices"),
+  //     category: "Home Services",
+  //     image: require("../../CARD_IMAGES/HomeServices.webp"),
+  //     gradientColors: ["#10b981", "#059669"] as const,
+  //     imageOpacity: 0.75,
+  //   },
+  //   {
+  //     id: "7",
+  //     title: t("home.constructionServices"),
+  //     category: "Construction Services",
+  //     image: require("../../CARD_IMAGES/ConstructionServices.webp"),
+  //     gradientColors: ["#78716c", "#57534e"] as const,
+  //     imageOpacity: 0.85,
+  //   },
+  //   {
+  //     id: "8",
+  //     title: t("home.rentedBikesAndCars"),
+  //     category: "Rented Bikes and Cars",
+  //     image: require("../../CARD_IMAGES/RentalServices.webp"),
+  //     gradientColors: ["#3b82f6", "#2563eb"] as const,
+  //     imageOpacity: 0.75,
+  //   },
+  //   {
+  //     id: "9",
+  //     title: t("home.parcelDelivery"),
+  //     category: "Parcel Delivery",
+  //     image: require("../../CARD_IMAGES/DeliveryServices.webp"),
+  //     gradientColors: ["#8b5cf6", "#7c3aed"] as const,
+  //     imageOpacity: 0.75,
+  //   },
+  //   {
+  //     id: "10",
+  //     title: t("home.xeroxAndPrinting"),
+  //     category: "Xerox and Printing",
+  //     image: require("../../CARD_IMAGES/XeroxServices.webp"),
+  //     gradientColors: ["#64748b", "#475569"] as const,
+  //     imageOpacity: 0.85,
+  //   },
+  //   {
+  //     id: "11",
+  //     title: t("home.securityServices"),
+  //     category: "Security Services",
+  //     image: require("../../CARD_IMAGES/SecurityServices.webp"),
+  //     gradientColors: ["#dc2626", "#b91c1c"] as const,
+  //     imageOpacity: 0.95,
+  //   },
+  //   {
+  //     id: "12",
+  //     title: t("home.driverServices"),
+  //     category: "Driver Services",
+  //     image: require("../../CARD_IMAGES/DriverServices.webp"),
+  //     gradientColors: ["#f97316", "#ea580c"] as const,
+  //     imageOpacity: 0.75,
+  //   },
+  //   {
+  //     id: "13",
+  //     title: t("home.mechanicServices"),
+  //     category: "Mechanic Services",
+  //     image: require("../../CARD_IMAGES/MechanicServices.webp"),
+  //     gradientColors: ["#84cc16", "#65a30d"] as const,
+  //     imageOpacity: 0.85,
+  //   },
+  //   {
+  //     id: "14",
+  //     title: t("home.goldOrnamentMaking"),
+  //     category: "Gold Ornament Making",
+  //     image: require("../../CARD_IMAGES/GoldServices.webp"),
+  //     gradientColors: ["#fbbf24", "#f59e0b"] as const,
+  //     imageOpacity: 0.75,
+  //   },
+  //   {
+  //     id: "15",
+  //     title: t("home.packersAndMovers"),
+  //     category: "Packers and Movers",
+  //     image: require("../../CARD_IMAGES/PackerServices.webp"),
+  //     gradientColors: ["#14b8a6", "#0d9488"] as const,
+  //     imageOpacity: 0.75,
+  //   },
+  //   // {
+  //   //   id: "16",
+  //   //   title: t("home.computerServices"),
+  //   //   category: "Computer Services",
+  //   //   image: require("../../CARD_IMAGES/ElectricServices.png"),
+  //   //   gradientColors: ["#6366f1", "#4f46e5"] as const,
+  //   //   imageOpacity: 0.85,
+  //   // },
+  //   // {
+  //   //   id: "17",
+  //   //   title: t("home.mobileServices"),
+  //   //   category: "Mobile Services",
+  //   //   image: require("../../CARD_IMAGES/BeautyServices.png"),
+  //   //   gradientColors: ["#06b6d4", "#0891b2"] as const,
+  //   //   imageOpacity: 0.75,
+  //   // },
+  //   // {
+  //   //   id: "18",
+  //   //   title: t("home.eventServices"),
+  //   //   category: "Event Services",
+  //   //   image: require("../../CARD_IMAGES/LaundryServices.png"),
+  //   //   gradientColors: ["#f43f5e", "#e11d48"] as const,
+  //   //   imageOpacity: 0.75,
+  //   // },
+  //   {
+  //     id: "19",
+  //     title: t("home.petServices"),
+  //     category: "Pet Services",
+  //     image: require("../../CARD_IMAGES/PetServices.webp"),
+  //     gradientColors: ["#a855f7", "#9333ea"] as const,
+  //     imageOpacity: 0.95,
+  //   },
+  // ];
   const AVAILABLE_SERVICES = [
     {
       id: "1",
-      title: t("home.electricServices"),
-      image: require("../../CARD_IMAGES/ElectricServices.png"),
-      backgroundColor: "rgba(245, 158, 11)",
-      opacity: 0.9,
-      imageOpacity: 0.8,
-      justifyContent: "center" as const,
+      title: t("home.electricalServices"),
+      category: "Electrical Services",
+      image: require("../../CARD_IMAGES/ElectricServices_1.webp"),
+      // Electric Yellow to Deep Gold
+      gradientColors: ["#fde047", "#ca8a04"] as const,
+      imageOpacity: 0.85,
     },
     {
       id: "2",
-      title: t("home.homeServices"),
-      image: require("../../CARD_IMAGES/BeautyServices.png"),
-      backgroundColor: "rgba(16, 185, 129)",
-      imageOpacity: 0.7,
+      title: t("home.plumbingServices"),
+      category: "Plumbing Services",
+      image: require("../../CARD_IMAGES/PlumberServices_1.webp"),
+      // Fresh Water Cyan to Deep Blue
+      gradientColors: ["#38bdf8", "#0284c7"] as const,
+      imageOpacity: 0.85,
     },
     {
       id: "3",
-      title: t("home.laundryServices"),
-      image: require("../../CARD_IMAGES/LaundryServices.png"),
-      backgroundColor: "rgba(14, 165, 233)",
-      imageOpacity: 0.7,
+      title: t("home.beautyServices"),
+      category: "Beauty Services",
+      image: require("../../CARD_IMAGES/BeautyServices_1.webp"),
+      // Soft Blush Pink to Deep Rose
+      gradientColors: ["#f472b6", "#be185d"] as const,
+      imageOpacity: 0.75,
     },
     {
       id: "4",
+      title: t("home.laundryServices"),
+      category: "Laundry Services",
+      image: require("../../CARD_IMAGES/LaundryServices_1.webp"),
+      // Fresh Linen Blue to Clean Indigo
+      gradientColors: ["#818cf8", "#4338ca"] as const,
+      imageOpacity: 0.75,
+    },
+    {
+      id: "5",
       title: t("home.careTakers"),
-      image: require("../../CARD_IMAGES/CareTakerServices.png"),
-      backgroundColor: "rgba(244, 63, 94)",
-      imageOpacity: 0.8,
+      category: "Care Takers",
+      image: require("../../CARD_IMAGES/CareTakerServices_1.webp"),
+      // Calming Health Mint to Trusting Green
+      gradientColors: ["#6ee7b7", "#059669"] as const,
+      imageOpacity: 0.95,
+    },
+    {
+      id: "6",
+      title: t("home.homeServices"),
+      category: "Home Services",
+      image: require("../../CARD_IMAGES/HomeServices_1.webp"),
+      // Warm Terracotta/Brick
+      gradientColors: ["#fb923c", "#c2410c"] as const,
+      imageOpacity: 0.75,
+    },
+    {
+      id: "7",
+      title: t("home.constructionServices"),
+      category: "Construction Services",
+      image: require("../../CARD_IMAGES/ConstructionServices_1.webp"),
+      // Safety Yellow to Construction Orange
+      gradientColors: ["#fcd34d", "#ea580c"] as const,
+      imageOpacity: 0.85,
+    },
+    {
+      id: "8",
+      title: t("home.rentedBikesAndCars"),
+      category: "Rented Bikes and Cars",
+      image: require("../../CARD_IMAGES/RentalServices_1.webp"),
+      // Asphalt Gray to Sleek Metal
+      gradientColors: ["#94a3b8", "#334155"] as const,
+      imageOpacity: 0.75,
+    },
+    {
+      id: "9",
+      title: t("home.parcelDelivery"),
+      category: "Parcel Delivery",
+      image: require("../../CARD_IMAGES/DeliveryServices_1.webp"),
+      // Cardboard Box Amber/Brown
+      gradientColors: ["#d97706", "#78350f"] as const,
+      imageOpacity: 0.75,
+    },
+    {
+      id: "10",
+      title: t("home.xeroxAndPrinting"),
+      category: "Xerox and Printing",
+      image: require("../../CARD_IMAGES/XeroxServices_1.webp"),
+      // Printer Ink Cyan
+      gradientColors: ["#2dd4bf", "#0369a1"] as const,
+      imageOpacity: 0.85,
+    },
+    {
+      id: "11",
+      title: t("home.securityServices"),
+      category: "Security Services",
+      image: require("../../CARD_IMAGES/SecurityServices_1.webp"),
+      // Authoritative Navy to Midnight Blue
+      gradientColors: ["#1e3a8a", "#0f172a"] as const,
+      imageOpacity: 0.95,
+    },
+    {
+      id: "12",
+      title: t("home.driverServices"),
+      category: "Driver Services",
+      image: require("../../CARD_IMAGES/DriverServices_1.webp"),
+      // Sleek Chauffeur Gray/Black
+      gradientColors: ["#64748b", "#0f172a"] as const,
+      imageOpacity: 0.75,
+    },
+    {
+      id: "13",
+      title: t("home.mechanicServices"),
+      category: "Mechanic Services",
+      image: require("../../CARD_IMAGES/MechanicServices_1.webp"),
+      // Steel Tools and Motor Oil
+      gradientColors: ["#9ca3af", "#374151"] as const,
+      imageOpacity: 0.85,
+    },
+    {
+      id: "14",
+      title: t("home.goldOrnamentMaking"),
+      category: "Gold Ornament Making",
+      image: require("../../CARD_IMAGES/GoldServices_1.webp"),
+      // Bright Gold to Deep Rich Gold
+      gradientColors: ["#fef08a", "#a16207"] as const,
+      imageOpacity: 0.75,
+    },
+    {
+      id: "15",
+      title: t("home.packersAndMovers"),
+      category: "Packers and Movers",
+      image: require("../../CARD_IMAGES/PackerServices_1.webp"),
+      // Energetic Transit Green
+      gradientColors: ["#a3e635", "#4d7c0f"] as const,
+      imageOpacity: 0.75,
+    },
+    // {
+    //   id: "16",
+    //   title: t("home.computerServices"),
+    //   category: "Computer Services",
+    //   image: require("../../CARD_IMAGES/ElectricServices.png"),
+    //   // Tech Purple/Indigo
+    //   gradientColors: ["#a78bfa", "#5b21b6"] as const,
+    //   imageOpacity: 0.85,
+    // },
+    // {
+    //   id: "17",
+    //   title: t("home.mobileServices"),
+    //   category: "Mobile Services",
+    //   image: require("../../CARD_IMAGES/BeautyServices.png"),
+    //   // Digital Cyan
+    //   gradientColors: ["#2dd4bf", "#0f766e"] as const,
+    //   imageOpacity: 0.75,
+    // },
+    // {
+    //   id: "18",
+    //   title: t("home.eventServices"),
+    //   category: "Event Services",
+    //   image: require("../../CARD_IMAGES/LaundryServices.png"),
+    //   // Festive Magenta/Gold
+    //   gradientColors: ["#f43f5e", "#9f1239"] as const,
+    //   imageOpacity: 0.75,
+    // },
+    {
+      id: "19",
+      title: t("home.petServices"),
+      category: "Pet Services",
+      image: require("../../CARD_IMAGES/PetServices_1.webp"),
+      // Playful Pet Orange to Warm Fur Brown
+      gradientColors: ["#fb923c", "#9a3412"] as const,
+      imageOpacity: 0.95,
     },
   ];
   const carouselData = [
@@ -1027,6 +1320,34 @@ const HomeScreen = () => {
     },
   ];
 
+  const scaleAnimsRef = React.useRef<Animated.Value[]>([]);
+
+  const getScaleAnim = (index: number) => {
+    if (!scaleAnimsRef.current[index]) {
+      scaleAnimsRef.current[index] = new Animated.Value(1);
+    }
+    return scaleAnimsRef.current[index];
+  };
+
+  // ─── Press Animation ───
+  const handlePressIn = (index: number) => {
+    Animated.spring(getScaleAnim(index), {
+      toValue: 0.97,
+      useNativeDriver: true,
+      friction: 8,
+    }).start();
+  };
+
+  const handlePressOut = (index: number) => {
+    Animated.spring(getScaleAnim(index), {
+      toValue: 1,
+      useNativeDriver: true,
+      friction: 8,
+    }).start();
+  };
+
+  const blurhash =
+    "|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{olj[ayj[j[ayfQfQfQfQfQfQfQfQfQfQfQfQfQfQfQfQfQfQfQfQfQfQfQfQfQ";
   return (
     <SafeAreaProvider>
       {/* <AppContainer> */}
@@ -1038,117 +1359,183 @@ const HomeScreen = () => {
               showsVerticalScrollIndicator={false}
               contentContainerStyle={styles.scrollContent}
             >
-              <Carousel
-                autoPlayInterval={3000}
-                loop
-                width={width}
-                height={200}
-                autoPlay={true}
-                data={carouselData}
-                scrollAnimationDuration={3000}
-                renderItem={({ item }) => (
-                  // <View
-                  //   style={{
-                  //     flex: 1,
-                  //     justifyContent: "center",
-                  //     backgroundColor: item.color,
-                  //     borderRadius: 15,
-                  //     marginHorizontal: 5,
-                  //     overflow: "hidden",
-                  //     elevation: 4,
-                  //     shadowColor: "#000",
-                  //     shadowOffset: { width: 0, height: 2 },
-                  //     shadowOpacity: 0.2,
-                  //     shadowRadius: 4,
-                  //   }}
-                  // >
-                  //   <ThemedText
-                  //     style={{
-                  //       textAlign: "center",
-                  //       fontSize: 20,
-                  //       color: "white",
-                  //     }}
-                  //     type="title"
-                  //   >
-                  //     {t("booking.specifiedTime")}
-                  //   </ThemedText>
-                  // </View>
-                  <Pressable
-                    style={{ paddingHorizontal: 10 }}
-                    onPress={() => {
-                      // alert("CALLED");
-                      navigation.navigate("service-providers");
-                      // router.navigate("/service-providers" as any);
-                    }}
-                  >
-                    <ImageBackground
-                      source={item.image}
-                      style={[
-                        styles.colorBlock,
-                        {
-                          height: 200,
-                        },
-                        {
-                          backgroundColor: item.color,
-                          ...(item.justifyContent && {
-                            justifyContent: item.justifyContent,
-                          }),
-                          ...(item.opacity && { opacity: item.opacity }),
-                        },
-                      ]}
-                      imageStyle={{ opacity: item.imageOpacity }}
-                    >
-                      <Text style={styles.cardText}>{item.title}</Text>
-                    </ImageBackground>
-                  </Pressable>
-                )}
-              />
-              <View style={styles.content}>
-                <ThemedView style={styles.titleContainer}>
-                  <ThemedText type="title">
-                    {t("home.welcomeBackUser")}
-                  </ThemedText>
-                  <HelloWave />
-                </ThemedView>
-                <ThemedView style={styles.stepContainer}>
-                  <ThemedText type="subtitle">{t("home.appIntro")}</ThemedText>
-                  <ThemedText>{t("home.exploreServices")}</ThemedText>
-                </ThemedView>
-
-                <FlatList
-                  data={AVAILABLE_SERVICES}
-                  keyExtractor={(item) => item.id}
-                  scrollEnabled={false}
-                  renderItem={({ item }) => (
-                    <Pressable
-                      onPress={() => {
-                        // alert("CALLED");
-                        navigation.navigate("service-providers");
-                        // router.navigate("/service-providers" as any);
-                      }}
-                    >
-                      <ImageBackground
-                        source={item.image}
-                        style={[
-                          styles.colorBlock,
-                          {
-                            backgroundColor: item.backgroundColor,
-                            ...(item.justifyContent && {
-                              justifyContent: item.justifyContent,
-                            }),
-                            ...(item.opacity && { opacity: item.opacity }),
-                          },
-                        ]}
-                        imageStyle={{ opacity: item.imageOpacity }}
+              {/* Promo Carousel */}
+              {searchQuery == "" && (
+                <View style={styles.carouselWrapper}>
+                  <Carousel
+                    autoPlayInterval={3000}
+                    loop
+                    width={width}
+                    height={220}
+                    autoPlay={true}
+                    data={carouselData}
+                    scrollAnimationDuration={3000}
+                    renderItem={({ item }) => (
+                      <Pressable
+                        style={{ paddingHorizontal: 10 }}
+                        onPress={() => {
+                          navigation.navigate("service-providers");
+                        }}
                       >
-                        <Text style={styles.cardText}>{item.title}</Text>
-                      </ImageBackground>
-                    </Pressable>
-                  )}
-                />
+                        <ImageBackground
+                          placeholder={{ blurhash }}
+                          source={item.image}
+                          style={[
+                            styles.promoCard,
+                            { backgroundColor: item.color },
+                          ]}
+                          imageStyle={{ opacity: 0.8 }}
+                        >
+                          <Text style={styles.promoCardText}>{item.title}</Text>
+                        </ImageBackground>
+                      </Pressable>
+                    )}
+                  />
+                </View>
+              )}
 
-                <View style={{ height: 100 }} />
+              {/* Greeting Header */}
+              {searchQuery == "" && (
+                <View style={styles.heroSection}>
+                  <LinearGradient
+                    colors={["#667eea", "#764ba2"]}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    style={styles.heroGradient}
+                  >
+                    <View style={styles.heroContent}>
+                      <Text style={styles.greetingLabel}>Welcome back </Text>
+                      <Text style={styles.heroTitle}>
+                        {/* {JSON.stringify(userData)} */}
+                        {userData.displayName ||
+                          userData.firstName + " " + userData.lastName}
+                      </Text>
+                      <Text style={styles.heroSubtitle}>
+                        {t("home.appIntro")}
+                      </Text>
+                      <View style={styles.heroStats}>
+                        <View style={styles.statItem}>
+                          <Text style={styles.statNumber}>25+</Text>
+                          <Text style={styles.statLabel}>Services</Text>
+                        </View>
+                        <View style={styles.statDivider} />
+                        <View style={styles.statItem}>
+                          <Text style={styles.statNumber}>500+</Text>
+                          <Text style={styles.statLabel}>Experts</Text>
+                        </View>
+                        <View style={styles.statDivider} />
+                        <View style={styles.statItem}>
+                          <Text style={styles.statNumber}>4.9</Text>
+                          <Text style={styles.statLabel}>Rating</Text>
+                        </View>
+                      </View>
+                    </View>
+                  </LinearGradient>
+                  {/* <HelloWave /> */}
+                </View>
+              )}
+
+              {/* Services Section */}
+
+              <View style={styles.servicesSection}>
+                {searchQuery == "" && (
+                  <View style={styles.sectionHeader}>
+                    <ThemedText style={styles.sectionTitle}>
+                      {t("home.exploreServices")}
+                    </ThemedText>
+                    {/* <Pressable style={styles.seeAllBtn}>
+                    <Text style={styles.seeAllText}>See All</Text>
+                    <FontAwesome
+                      name="chevron-right"
+                      size={12}
+                      color="#667eea"
+                    />
+                  </Pressable> */}
+                  </View>
+                )}
+
+                <View style={styles.servicesGrid}>
+                  {AVAILABLE_SERVICES.map((item, index) => {
+                    console.log("Search Query : ", searchQuery);
+                    console.log("item.title : ", item.title.toLowerCase());
+                    if (
+                      // searchQuery == "" ||
+                      item.title
+                        .toLowerCase()
+                        .includes(searchQuery.toLowerCase())
+                    ) {
+                      console.log("CALLED99999");
+                      return (
+                        <Pressable
+                          key={item.id}
+                          onPressIn={() => handlePressIn(index)}
+                          onPressOut={() => handlePressOut(index)}
+                          style={[
+                            styles.serviceCard,
+                            { flex: 1 },
+                            searchQuery !== "" && {
+                              maxWidth: "100%",
+                              minWidth: "80%",
+                            },
+                            index % 2 === 0 &&
+                              searchQuery == "" && { marginRight: 12 },
+                          ]}
+                          onPress={() => {
+                            navigation.navigate("service-providers", {
+                              category: item.category,
+                            });
+                          }}
+                        >
+                          <Animated.View
+                            style={[
+                              // styles.cardContainer,
+                              {
+                                // backgroundColor: isDark ? "#1F2937" : "#FFFFFF",
+                                // shadowColor: isDark ? "#000" : "#000",
+                                transform: [{ scale: getScaleAnim(index) }],
+                              },
+                            ]}
+                          >
+                            <ImageBackground
+                              placeholder={{ blurhash }}
+                              source={item.image}
+                              style={styles.serviceImageBg}
+                              imageStyle={{
+                                opacity: item.imageOpacity,
+                                borderRadius: 20,
+                              }}
+                            >
+                              <LinearGradient
+                                colors={item.gradientColors}
+                                start={{ x: 0, y: 1 }}
+                                end={{ x: 1, y: 0 }}
+                                style={styles.serviceCardOverlay}
+                              />
+                              <View style={styles.serviceCardContent}>
+                                <Text style={styles.serviceCardTitle}>
+                                  {item.title}
+                                </Text>
+                                <View style={styles.bookNowBadge}>
+                                  <Text style={styles.bookNowText}>
+                                    Book Now
+                                  </Text>
+                                </View>
+                              </View>
+                            </ImageBackground>
+                          </Animated.View>
+                        </Pressable>
+                      );
+                    } else {
+                      console.log("CALLED11111");
+
+                      return <></>;
+                    }
+                  })}
+                </View>
               </View>
+
+              {/* Bottom spacer */}
+              <View style={{ height: 120 }} />
             </ScrollView>
 
             <View style={styles.stickySearch}>
@@ -1219,6 +1606,18 @@ const HomeScreen = () => {
               </View>
             </View>
           </View>
+          <Pressable
+            onPress={() => navigation.navigate("ai-assistant")}
+            style={({ pressed }) => [
+              styles.floatingAiButton,
+              pressed && styles.floatingAiButtonPressed,
+            ]}
+          >
+            <View style={styles.floatingAiInner}>
+              <FontAwesome name="magic" size={22} color="#fff" />
+              <Text style={styles.floatingAiText}>Ask AI</Text>
+            </View>
+          </Pressable>
         </SafeAreaView>
       </ThemedView>
       {/* </AppContainer> */}
@@ -2047,60 +2446,245 @@ const styles = StyleSheet.create({
   },
   container: { flex: 1 },
   scrollWrapper: { flex: 1 },
-  scrollContent: { paddingTop: 100, paddingBottom: 20 },
-  content: { padding: 32, gap: 16 },
-  titleContainer: { flexDirection: "row", alignItems: "center", gap: 8 },
-  stepContainer: { gap: 8, marginBottom: 8 },
-  colorBlock: {
-    height: 120,
-    borderRadius: 20,
+  scrollContent: { paddingTop: 80, paddingBottom: 20 },
+
+  // Carousel styles
+  carouselWrapper: {
+    marginTop: 20,
     marginBottom: 20,
-    width: "100%",
+  },
+  promoCard: {
+    height: 220,
+    borderRadius: 10,
     overflow: "hidden",
     justifyContent: "center",
-  },
-  cardText: {
-    color: "white",
-    justifyContent: "center",
-    alignContent: "center",
     alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.25,
+    shadowRadius: 16,
+    elevation: 8,
+  },
+  promoCardText: {
+    color: "white",
+    fontFamily: "Montserrat-ExtraBold",
+    fontSize: 22,
+    textShadowColor: "rgba(0,0,0,0.5)",
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 4,
+  },
+
+  // Hero section
+  heroSection: {
+    marginHorizontal: 20,
+    marginBottom: 28,
+    borderRadius: 24,
+    overflow: "hidden",
+  },
+  heroGradient: {
+    borderRadius: 24,
+    padding: 24,
+  },
+  heroContent: {
+    gap: 6,
+  },
+  greetingLabel: {
+    color: "rgba(255,255,255,0.8)",
     fontFamily: "PlusJakartaSans",
-    fontWeight: "bold",
-    padding: 10,
-    textShadowColor: "#000",
-    textShadowOffset: { width: 0.5, height: 0.5 },
-    textShadowRadius: 1,
+    fontSize: 13,
+    textTransform: "uppercase",
+    letterSpacing: 1,
+  },
+  heroTitle: {
+    color: "#fff",
+    fontFamily: "Montserrat-ExtraBold",
+    fontSize: 24,
+    lineHeight: 30,
+  },
+  heroSubtitle: {
+    color: "rgba(255,255,255,0.9)",
+    fontFamily: "PlusJakartaSans",
+    fontSize: 15,
+    lineHeight: 22,
+    marginTop: 4,
+  },
+  heroStats: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 16,
+    gap: 12,
+  },
+  statItem: {
+    alignItems: "center",
+  },
+  statNumber: {
+    color: "#fff",
+    fontFamily: "Montserrat-Bold",
     fontSize: 18,
   },
+  statLabel: {
+    color: "rgba(255,255,255,0.7)",
+    fontFamily: "PlusJakartaSans",
+    fontSize: 11,
+    marginTop: 2,
+  },
+  statDivider: {
+    width: 1,
+    height: 28,
+    backgroundColor: "rgba(255,255,255,0.3)",
+  },
+
+  // Services section
+  servicesSection: {
+    paddingHorizontal: 20,
+  },
+  sectionHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 16,
+  },
+  sectionTitle: {
+    fontFamily: "Montserrat-Bold",
+    fontSize: 20,
+    // color: "#1a1a2e",
+  },
+  seeAllBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+  },
+  seeAllText: {
+    fontFamily: "PlusJakartaSans",
+    fontSize: 14,
+    color: "#667eea",
+    fontWeight: "600",
+  },
+  servicesGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 12,
+  },
+  serviceCard: {
+    minWidth: "45%",
+    maxWidth: "50%",
+    // height: 170,
+    borderRadius: 20,
+    // overflow: "hi",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 6,
+    marginBottom: 10,
+  },
+  serviceImageBg: {
+    // flex: 1,
+    height: 220,
+    justifyContent: "flex-end",
+    borderRadius: 20,
+    overflow: "hidden",
+  },
+  serviceCardOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    opacity: 0.2,
+  },
+  serviceCardContent: {
+    padding: 16,
+    zIndex: 2,
+  },
+  serviceCardTitle: {
+    color: "#fff",
+    fontFamily: "Montserrat-Bold",
+    fontSize: 17,
+    fontWeight: 400,
+    alignSelf: "flex-start",
+    // backgroundColor: "rgba(0,0,0,0.2)",
+    textShadowColor: "rgba(0,0,0,0.9)",
+    textShadowOffset: { width: 0, height: 3.3 },
+    textShadowRadius: 2,
+    marginBottom: 10,
+  },
+  bookNowBadge: {
+    backgroundColor: "rgba(255,255,255,0.2)",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+    alignSelf: "flex-start",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.3)",
+  },
+  bookNowText: {
+    color: "#fff",
+    fontFamily: "PlusJakartaSans",
+    fontSize: 12,
+    fontWeight: "700",
+  },
+
+  // Search bar
   stickySearch: {
     position: "absolute",
     top: 8,
-    left: 12,
-    right: 12,
+    left: 16,
+    right: 16,
     zIndex: 10,
   },
   searchContainer: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(255,255,255,0.9)",
+    backgroundColor: "rgba(255,255,255,0.95)",
     borderWidth: 1,
-    borderColor: "rgba(0,0,0,0.3)",
+    borderColor: "rgba(0,0,0,0.08)",
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderRadius: 30,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.5,
-    shadowRadius: 4,
-    elevation: 13,
+    shadowColor: "#667eea",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 6,
   },
   searchInput: {
     flex: 1,
-    marginHorizontal: 4,
+    marginHorizontal: 10,
     fontSize: 16,
+    fontFamily: "PlusJakartaSans",
     includeFontPadding: false,
   },
   micContainer: { padding: 4 },
+  floatingAiButton: {
+    position: "absolute",
+    bottom: 120,
+    right: 20,
+    width: 64,
+    height: 64,
+    borderWidth: 2,
+    borderColor: "rgb(0,0,0,0.5)",
+    borderRadius: 20,
+    backgroundColor: "#1a73e8",
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#1a73e8",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 8,
+    elevation: 8,
+    zIndex: 20,
+  },
+  floatingAiButtonPressed: {
+    transform: [{ scale: 0.92 }],
+    shadowOpacity: 0.2,
+  },
+  floatingAiInner: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  floatingAiText: {
+    color: "#fff",
+    fontSize: 10,
+    fontWeight: "700",
+    marginTop: 2,
+  },
 });
 
 export default HomeScreen;

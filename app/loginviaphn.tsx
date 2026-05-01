@@ -1,6 +1,5 @@
-import React, { useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import {
-  Alert,
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
@@ -12,6 +11,7 @@ import {
 import { PhoneAuthProvider, signInWithCredential } from "firebase/auth";
 
 // 2. Import your existing Web auth object
+import { PopupContext } from "@/PopupProvider";
 import { FirebaseRecaptchaVerifierModal } from "expo-firebase-recaptcha";
 import { Image } from "expo-image";
 import { ThemedText } from "../components/themed-text";
@@ -26,6 +26,7 @@ const PhoneLogin = () => {
   const [loading, setLoading] = useState(false);
   const [userName, setUserName] = React.useState("");
   const [password, setPassword] = React.useState("");
+  const { customAlert } = useContext(PopupContext);
   // This ref acts as the "appVerifier" that Firebase demands
   const recaptchaVerifier = useRef<any>(null);
 
@@ -34,7 +35,7 @@ const PhoneLogin = () => {
     setLoading(true);
     // Prevent argument-error: Check if the verifier is actually ready
     if (!recaptchaVerifier.current) {
-      Alert.alert("Wait", "Recaptcha is loading, please wait a second.");
+      customAlert("Wait", "Recaptcha is loading, please wait a second.");
       setLoading(false);
       return;
     }
@@ -43,7 +44,7 @@ const PhoneLogin = () => {
     // Prevent argument-error: Ensure phone number is formatted perfectly
     const cleanNumber = phoneNumberWithCode.replace(/[\s-]/g, "");
     if (!cleanNumber.startsWith("+")) {
-      Alert.alert(
+      customAlert(
         "Error",
         "Phone number must start with a + (e.g., +919876543210)",
       );
@@ -63,11 +64,11 @@ const PhoneLogin = () => {
 
       setVerificationId(vid);
       setLoading(false);
-      Alert.alert("Success", "OTP sent to your phone!");
+      customAlert("Success", "OTP sent to your phone!");
     } catch (error: any) {
       setLoading(false);
       console.log("Send OTP Error:", error.message);
-      Alert.alert("Error", error.message);
+      customAlert("Error", error.message);
     }
   };
 
@@ -81,13 +82,13 @@ const PhoneLogin = () => {
         verificationCode,
       );
       await signInWithCredential(auth, credential);
-      Alert.alert("Success", "User signed in successfully!");
+      customAlert("Success", "User signed in successfully!");
       setLoading(false);
     } catch (error: any) {
       setLoading(false);
 
       console.log("Verify OTP Error:", error.message);
-      Alert.alert("Error", "Invalid OTP code.");
+      customAlert("Error", "Invalid OTP code.");
     }
   };
 

@@ -22,7 +22,7 @@ import Animated, {
 
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { Colors } from "@/constants/theme";
-import { useColorScheme } from "@/hooks/use-color-scheme";
+import { getThemeColor, useColorScheme } from "@/components/themed-color";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import HomeScreen from "../BottomTabs";
 import TrackScreen from "../BottomTabs/track";

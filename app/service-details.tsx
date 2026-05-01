@@ -3,7 +3,7 @@ import { getThemeColor } from "@/components/themed-color";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { Image } from "expo-image";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -20,34 +20,49 @@ const { width } = Dimensions.get("window");
 
 const ServiceDetails = () => {
   const navigation = useNavigation<any>();
+  const route = useRoute<any>();
   const { t } = useTranslation();
   const themeColor = getThemeColor(false);
 
-  const fanServiceHighlights = [
-    "Ceiling fan cleaning & dusting",
-    "Blade alignment & balancing",
-    "Motor inspection & lubrication",
-    "Electrical connection check",
-    "Safety switch testing",
-    "Remote functionality test",
-    "🕐 Service time: 30-45 mins",
-  ];
+  // Get dynamic data from route params
+  const service = route.params?.service || {};
+  const theme = route.params?.theme || {};
+  const highlights = route.params?.highlights || [];
+  const exclusionList = route.params?.exclusionList || [];
 
-  const exclusions = [
-    "Ceiling fan installation (separate service)",
-    "Wall fan or pedestal fan service",
-    "Major electrical repairs",
-    "Fan regulator replacement",
-    "Warranty void repairs",
-  ];
+  // Service data with fallbacks
+  const serviceName = service.serviceType || service.name || "Service";
+  const serviceImage = service.photoUrl
+    ? { uri: service.photoUrl }
+    : theme.image || require("../CARD_IMAGES/ElectricServices.png");
+  const price = service.price || service.amount || "250";
+  const duration = service.timeTaken || "30-45 mins";
+  const rating = service.rating || "4.8";
+  const reviewCount = service.reviewCount || "1,247";
+  alert(JSON.stringify(service));
+  // Parse important notes if not passed as highlights
+  const importantNotes =
+    highlights.length > 0
+      ? highlights
+      : service.importantNotes
+        ? Array.isArray(service.importantNotes)
+          ? service.importantNotes
+          : String(service.importantNotes)
+              .split(",")
+              .map((s: string) => s.trim())
+        : [];
 
-  const importantNotes = [
-    "⚠️ Remove hanging items before service",
-    "⚠️ Ensure good ventilation during service",
-    "⚠️ Customer to switch off fan power",
-    "⚠️ Service during 7AM-8PM only",
-    "⭐ 100% satisfaction guarantee",
-  ];
+  // Parse exclusions if not passed
+  const exclusions =
+    exclusionList.length > 0
+      ? exclusionList
+      : service.exclusions
+        ? Array.isArray(service.exclusions)
+          ? service.exclusions
+          : String(service.exclusions)
+              .split(",")
+              .map((s: string) => s.trim())
+        : [];
 
   return (
     <ThemedView style={styles.container}>
@@ -60,7 +75,7 @@ const ServiceDetails = () => {
           <Ionicons name="chevron-back-outline" size={28} color={themeColor} />
         </TouchableOpacity>
         <ThemedText type="subtitle" style={styles.headerTitle}>
-          {t("service.fanRepair")}
+          {serviceName}
         </ThemedText>
       </View>
 
@@ -71,7 +86,7 @@ const ServiceDetails = () => {
       >
         {/* Hero Image */}
         <Image
-          source={require("../CARD_IMAGES/ElectricServices.png")}
+          source={serviceImage}
           style={styles.heroImage}
           contentFit="cover"
         />
@@ -80,72 +95,84 @@ const ServiceDetails = () => {
         <View style={styles.section}>
           <View style={styles.priceTag}>
             <ThemedText style={styles.priceCurrency}>₹</ThemedText>
-            <ThemedText style={styles.priceAmount}>250</ThemedText>
+            <ThemedText style={styles.priceAmount}>{price}</ThemedText>
             <ThemedText style={styles.priceLabel}>/service</ThemedText>
           </View>
 
           <View style={styles.ratingContainer}>
-            <ThemedText style={styles.rating}>4.8 ★ (1,247 reviews)</ThemedText>
+            <ThemedText style={styles.rating}>
+              {rating} ★ ({reviewCount} reviews)
+            </ThemedText>
             <View style={styles.timeEstimate}>
               <Ionicons name="time-outline" size={16} color="#F59E0B" />
-              <ThemedText style={styles.timeText}>30-45 mins</ThemedText>
+              <ThemedText style={styles.timeText}>{duration} mins</ThemedText>
             </View>
           </View>
         </View>
 
         {/* What's Included */}
-        <View style={styles.section}>
-          <ThemedText type="subtitle" style={styles.sectionTitle}>
-            {t("service.included")}
-          </ThemedText>
-          <View style={styles.featureList}>
-            {fanServiceHighlights.map((feature, index) => (
-              <View key={index} style={styles.featureItem}>
-                <View style={styles.checkIcon}>
-                  <Ionicons name="checkmark-sharp" size={20} color="#10B981" />
+        {importantNotes.length > 0 && (
+          <View style={styles.section}>
+            <ThemedText type="subtitle" style={styles.sectionTitle}>
+              {t("service.included")}
+            </ThemedText>
+            <View style={styles.featureList}>
+              {importantNotes.map((feature: string, index: number) => (
+                <View key={index} style={styles.featureItem}>
+                  <View style={styles.checkIcon}>
+                    <Ionicons
+                      name="checkmark-sharp"
+                      size={20}
+                      color="#10B981"
+                    />
+                  </View>
+                  <ThemedText style={styles.featureText}>{feature}</ThemedText>
                 </View>
-                <ThemedText style={styles.featureText}>{feature}</ThemedText>
-              </View>
-            ))}
+              ))}
+            </View>
           </View>
-        </View>
+        )}
 
         {/* What's Not Included */}
-        <View style={styles.section}>
-          <ThemedText
-            type="subtitle"
-            style={[styles.sectionTitle, styles.exclusionTitle]}
-          >
-            {t("service.notIncluded")}
-          </ThemedText>
-          <View style={styles.featureList}>
-            {exclusions.map((exclusion, index) => (
-              <View
-                key={index}
-                style={[styles.featureItem, styles.exclusionItem]}
-              >
-                <View style={styles.xIcon}>
-                  <Ionicons name="close-sharp" size={24} color="#EF4444" />
+        {exclusions.length > 0 && (
+          <View style={styles.section}>
+            <ThemedText
+              type="subtitle"
+              style={[styles.sectionTitle, styles.exclusionTitle]}
+            >
+              {t("service.notIncluded")}
+            </ThemedText>
+            <View style={styles.featureList}>
+              {exclusions.map((exclusion: string, index: number) => (
+                <View
+                  key={index}
+                  style={[styles.featureItem, styles.exclusionItem]}
+                >
+                  <View style={styles.xIcon}>
+                    <Ionicons name="close-sharp" size={24} color="#EF4444" />
+                  </View>
+                  <ThemedText style={styles.featureText}>
+                    {exclusion}
+                  </ThemedText>
                 </View>
-                <ThemedText style={styles.featureText}>{exclusion}</ThemedText>
-              </View>
-            ))}
+              ))}
+            </View>
           </View>
-        </View>
+        )}
 
         {/* Important Notes */}
-        <View style={styles.section}>
-          <ThemedText type="subtitle" style={styles.sectionTitle}>
-            {t("service.importantNotes")}
-          </ThemedText>
-          <View style={styles.notesGrid}>
-            {importantNotes.map((note, index) => (
-              <ThemedCard key={index} style={styles.noteCard}>
-                <ThemedText style={styles.noteText}>{note}</ThemedText>
+        {service.notes && (
+          <View style={styles.section}>
+            <ThemedText type="subtitle" style={styles.sectionTitle}>
+              {t("service.importantNotes")}
+            </ThemedText>
+            <View style={styles.notesGrid}>
+              <ThemedCard style={styles.noteCard}>
+                <ThemedText style={styles.noteText}>{service.notes}</ThemedText>
               </ThemedCard>
-            ))}
+            </View>
           </View>
-        </View>
+        )}
 
         {/* Service Highlights */}
         <View style={styles.section}>
@@ -178,13 +205,16 @@ const ServiceDetails = () => {
       </ScrollView>
 
       {/* Fixed Book Now Button */}
-      {/* <LinearGradient
-        colors={["#10B981", "#059669"]}
-        style={styles.fixedButton}
-      > */}
       <View style={styles.fixedButton}>
         <AwesomeButton
-          onPress={() => navigation.navigate("schedule-details")}
+          onPress={() =>
+            navigation.navigate("schedule-details", {
+              service,
+              highlights: importantNotes,
+              exclusionList: exclusions,
+              theme,
+            })
+          }
           width={width - 40}
           height={56}
           borderRadius={28}
@@ -195,7 +225,6 @@ const ServiceDetails = () => {
           </ThemedText>
         </AwesomeButton>
       </View>
-      {/* </LinearGradient> */}
     </ThemedView>
   );
 };
@@ -207,38 +236,35 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     alignItems: "center",
-    // paddingHorizontal: 20,
     paddingTop: 10,
     paddingBottom: 15,
-    backgroundColor: "rgba(0, 0, 0, 0.8)",
+    // backgroundColor: "rgba(0, 0, 0, 0.8)",
     zIndex: 1000,
   },
   backButton: {
     padding: 8,
+    paddingHorizontal: 20,
+    // backgroundColor: "red",
   },
   headerTitle: {
-    // flex: 1,
     position: "absolute",
     alignSelf: "center",
     width: "100%",
-    // backgroundColor: "red",
     textAlign: "center",
-    // fontWeight: "800",
   },
   scrollView: {
     flex: 1,
-    // paddingBottom: 100,
   },
   section: {
     paddingHorizontal: 20,
     paddingVertical: 20,
-    backgroundColor: "rgba(0, 0, 0, 0.3)",
+    // backgroundColor: "rgba(0, 0, 0, 0.3)",
   },
   sectionTitle: {
     fontSize: 20,
     fontWeight: "800",
     marginBottom: 16,
-    color: "white",
+    // color: "white",
   },
   exclusionTitle: {
     color: "#EF4444",
@@ -259,7 +285,7 @@ const styles = StyleSheet.create({
     marginRight: 4,
   },
   priceAmount: {
-    fontSize: 48,
+    fontSize: 28,
     fontWeight: "900",
     color: "#10B981",
   },
@@ -320,7 +346,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 16,
     lineHeight: 22,
-    color: "white",
+    // color: "white",
   },
   notesGrid: {
     flexDirection: "column",
@@ -330,9 +356,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   noteCard: {
-    flex: 0.48,
     padding: 16,
-    height: 100,
+    borderRadius: 10,
     justifyContent: "center",
   },
   noteText: {
@@ -354,11 +379,11 @@ const styles = StyleSheet.create({
   highlightNumber: {
     fontSize: 24,
     fontWeight: "900",
-    color: "white",
+    // color: "white",
   },
   highlightLabel: {
     fontSize: 14,
-    color: "rgba(255, 255, 255, 0.8)",
+    // color: "rgba(255, 255, 255, 0.8)",
     marginTop: 4,
   },
   fixedButton: {

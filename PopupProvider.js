@@ -1,32 +1,40 @@
 import React from "react";
-import { Text, View } from "react-native";
+import { View } from "react-native";
 import AwesomeButton from "react-native-really-awesome-button";
+import { ThemedText } from "./components/themed-text";
 
 export const PopupContext = React.createContext({
-  showPopup: (title, message, buttons) => {},
+  customAlert: (title, message, buttons) => {},
 });
 
 // export const customAlert = React.useContext(PopupContext);
 
 export const PopupProvider = ({ children }) => {
   const [popupVisible, setPopupVisible] = React.useState(false);
-  const [popupTitle, setPopupTitle] = React.useState("Alert");
-  const [popupMessage, setPopupMessage] = React.useState("Message");
+  const [popupTitle, setPopupTitle] = React.useState("Message");
+  const [popupMessage, setPopupMessage] = React.useState("");
   const [popupButtons, setPopupButtons] = React.useState([
     { title: "OK", onPress: () => setPopupVisible(false) },
   ]);
 
-  const showPopup = (title, message, buttons) => {
-    setPopupTitle(title);
-    setPopupMessage(message);
-    setPopupButtons(buttons);
+  const customAlert = (title, message, buttons) => {
+    if (title) {
+      setPopupTitle(title);
+    }
+    if (message) {
+      // alert(JSON.stringify(message));
+      setPopupMessage(message);
+    }
+    if (buttons) {
+      setPopupButtons(buttons);
+    }
     setPopupVisible(true);
     // Implement your popup logic here, e.g., using a modal or a third-party library
     // console.log("Popup:", title, message, buttons);
   };
 
   return (
-    <PopupContext.Provider value={{ showPopup }}>
+    <PopupContext.Provider value={{ customAlert }}>
       {popupVisible && (
         <View
           style={{
@@ -45,18 +53,24 @@ export const PopupProvider = ({ children }) => {
           }}
         >
           <View
-            style={{ backgroundColor: "white", padding: 20, borderRadius: 10 }}
+            style={{
+              backgroundColor: "white",
+              padding: 20,
+              borderRadius: 10,
+              width: "70%",
+              // paddingHorizontal: 70,
+            }}
           >
-            <Text>
+            <ThemedText>
               {typeof popupTitle == "string"
                 ? popupTitle
                 : JSON.stringify(popupTitle)}
-            </Text>
-            <Text>
+            </ThemedText>
+            <ThemedText style={{ width: "100%" }}>
               {typeof popupMessage == "string"
                 ? popupMessage
                 : JSON.stringify(popupMessage)}
-            </Text>
+            </ThemedText>
             <View
               style={{
                 flexDirection: "row",

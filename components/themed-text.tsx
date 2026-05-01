@@ -1,7 +1,6 @@
-import { StyleSheet, Text, useColorScheme, type TextProps } from "react-native";
+import { StyleSheet, Text, type TextProps } from "react-native";
 
-import { ThemeContext } from "@/app/ThemeProvider";
-import { useContext } from "react";
+import { useColorScheme } from "./themed-color";
 
 export type ThemedTextProps = TextProps & {
   lightColor?: string;
@@ -17,17 +16,16 @@ export function ThemedText({
   ...rest
 }: ThemedTextProps) {
   // const color = useThemeColor({ light: lightColor, dark: darkColor }, "text");
-  const { theme } = useContext(ThemeContext);
+  // const { theme } = useContext(ThemeContext);
   const deviceTheme = useColorScheme();
+  // alert(deviceTheme);
   // const backgroundColor = useThemeColor({ light: lightColor, dark: darkColor }, 'background');
   const finalColor =
-    theme === "system"
-      ? deviceTheme === "dark"
-        ? "white"
-        : "black"
-      : theme === "dark"
-        ? "white"
-        : "black";
+    // deviceTheme === "system"
+    deviceTheme === "dark" ? "white" : "black";
+  // : theme === "dark"
+  //   ? "white"
+  //   : "black";
 
   return (
     <Text

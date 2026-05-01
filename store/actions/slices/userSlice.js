@@ -5,6 +5,8 @@ const initialState = {
     mobileNumber: null,
     biometricEnabled: false,
     walletBalance: 0,
+    pin: null, // ADD THIS
+    referralCode: null, // ADD THIS
   },
   loading: false,
   error: null,
@@ -34,10 +36,16 @@ const userSlice = createSlice({
       }
     },
     clearUserData(state) {
+      // Reset to initial state - this will be persisted
       state.data = {
         mobileNumber: null,
         biometricEnabled: false,
+        walletBalance: 0,
+        pin: null, // ADD THIS
+        referralCode: null, // ADD THIS
       };
+      state.loading = false;
+      state.error = null;
     },
     setUserLoading(state, action) {
       state.loading = action.payload;

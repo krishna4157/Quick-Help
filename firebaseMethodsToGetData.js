@@ -1,6 +1,7 @@
 import {
   collection,
   doc,
+  getDoc,
   getDocs,
   query,
   setDoc,
@@ -98,9 +99,14 @@ export const getAvailableOrders = async (serviceType) => {
     }
 
     const querySnapshot = await getDocs(q);
+    // const providersList = querySnapshot.docs.map((doc) => ({
+    //   id: doc.id,
+    //   ...doc.data(),
+    // }));
+
     const providersList = querySnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
+      ...doc.data(), // 1. Put the document data first
+      id: doc.id, // 2. Force the ID to be the real Firestore Document ID
     }));
 
     return providersList; // Set this to your React Native state
@@ -191,39 +197,125 @@ export const saveOrders = async (orderData, orderId) => {
   }
 };
 
-export const assignOrderToWorker = async (workerEmail, orderId) => {
-  // 1. Initialize a batch
+export const assignOrderToWorker = async (workerEmail, newOrderId) => {
   const batch = writeBatch(db);
 
   try {
-    // 2. Setup the Worker Update
-    // Assuming workers are in a "providers" collection and the doc ID is the email or a known ID
-    // (If your doc ID is NOT the email, you'll need to query for the docRef first like you did before)
     const workerRef = doc(db, "providers", workerEmail);
+    const newOrderRef = doc(db, "orders", newOrderId);
 
-    batch.update(workerRef, {
-      assigned: true,
-      currentOrderId: orderId, // Link Order to Worker
-    });
+    // 1. Fetch the worker's CURRENT state before making changes
+    const workerSnap = await getDoc(workerRef);
+    if (!workerSnap.exists()) {
+      console.error("Worker not found");
+      return false;
+    }
 
-    // 3. Setup the Order Update
-    const orderRef = doc(db, "orders", orderId);
+    const workerData = workerSnap.data();
+    const previousOrderId = workerData.currentOrderId;
 
-    batch.update(orderRef, {
-      workerAssigned: workerEmail, // Link Worker to Order
+    // 2. Are they already assigned to this exact order?
+    // If yes, do nothing and return.
+    if (previousOrderId === newOrderId) {
+      console.log("Worker is already assigned to this order.");
+      return true;
+    }
+
+    // 3. UN-ASSIGN THE OLD ORDER (The Missing Logic!)
+    // If the worker had a previous order, put it back in the pool
+    if (previousOrderId) {
+      const oldOrderRef = doc(db, "orders", previousOrderId);
+      batch.update(oldOrderRef, {
+        workerAssigned: "", // Remove the worker's email
+        orderStatus: "Pending", // Make it available for others again
+      });
+      console.log(
+        `Unassigned order ${previousOrderId} and returning it to pool.`,
+      );
+    }
+
+    // 4. ASSIGN THE NEW ORDER
+    batch.update(newOrderRef, {
+      workerAssigned: workerEmail,
       orderStatus: "Assigned",
     });
 
-    // 4. Commit the batch (Executes both updates atomically)
+    // 5. UPDATE THE WORKER
+    batch.update(workerRef, {
+      assigned: true,
+      currentOrderId: newOrderId,
+    });
+
+    // 6. Execute all 3 updates simultaneously
     await batch.commit();
 
-    console.log("Successfully linked Worker and Order!");
+    console.log("Successfully swapped/linked Worker and Order!");
     return true;
   } catch (error) {
     console.error("Batch write failed: ", error);
     return false;
-    // throw error;
   }
 };
 
-// export default { getAvailableProviders, updateWorkerData };
+export const completeOrder = async (orderId, workerEmail) => {
+  const batch = writeBatch(db);
+
+  try {
+    const orderRef = doc(db, "orders", orderId);
+    const workerRef = doc(db, "providers", workerEmail);
+
+    // 1. Update order status to "Completed"
+    batch.update(orderRef, {
+      orderStatus: "Completed",
+    });
+
+    // 2. Update worker - mark as not assigned and available again
+    batch.update(workerRef, {
+      assigned: false,
+      isAvailable: true,
+      currentOrderId: "", // Clear the current order
+    });
+
+    // 3. Execute both updates simultaneously
+    await batch.commit();
+
+    console.log("Order marked as completed successfully!");
+    return true;
+  } catch (error) {
+    console.error("Failed to complete order: ", error);
+    return false;
+  }
+};
+
+export const getAvailableServices = async (categories) => {
+  try {
+    const servicesRef = collection(db, "services");
+    let q;
+
+    // If categories is provided (string or array), filter by category
+    if (
+      categories !== undefined &&
+      categories !== null &&
+      (Array.isArray(categories) ? categories.length > 0 : categories !== "")
+    ) {
+      // Normalize to array for consistent handling
+      const categoryArray = Array.isArray(categories)
+        ? categories
+        : [categories];
+      q = query(servicesRef, where("category", "in", categoryArray));
+    } else {
+      // No filter - return all services
+      q = query(servicesRef);
+    }
+
+    const querySnapshot = await getDocs(q);
+    const servicesList = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    return servicesList;
+  } catch (error) {
+    console.error("Error fetching services: ", error);
+    return [];
+  }
+};

@@ -18,9 +18,9 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 
+import { useColorScheme } from "@/components/themed-color";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { Colors } from "@/constants/theme";
-import { useColorScheme } from "@/hooks/use-color-scheme";
 
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useTranslation } from "react-i18next";

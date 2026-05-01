@@ -97,11 +97,11 @@ android {
         externalNativeBuild {
             cmake {
         // This runs everywhere (EAS and Local)
-        arguments "-DCMAKE_OBJECT_PATH_MAX=1024"
+        // arguments "-DCMAKE_OBJECT_PATH_MAX=1024"
         
         // This ONLY runs on your local Windows machine
         // if (OperatingSystem.current().isWindows()) {
-        //     arguments "-DCMAKE_MAKE_PROGRAM=C:/Users/Krisshna Santosh GSS/AppData/Local/uv/cache/archive-v0/n87Dt5-qSCVgI_dpO2s6W/ninja-1.13.0.data/scripts/ninja.exe"
+             arguments "-DCMAKE_MAKE_PROGRAM=D:/NINJA/ninja.exe"
         // }
         }
         }
@@ -165,6 +165,8 @@ android {
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
+    implementation "com.truecaller.android.sdk:truecaller-sdk:3.0.0"
+
 
     def isGifEnabled = (findProperty('expo.gif.enabled') ?: "") == "true";
     def isWebpEnabled = (findProperty('expo.webp.enabled') ?: "") == "true";

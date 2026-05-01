@@ -1,11 +1,8 @@
 import { ThemedText } from "@/components/themed-text";
-import { getUserData, login } from "@/firebaseMethods";
+import { getUserData, login, processTruecallerAuth } from "@/firebaseMethods";
 import Loader from "@/Loader";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {
-  GoogleSignin,
-  GoogleSigninButton,
-} from "@react-native-google-signin/google-signin";
+import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { useNavigation } from "@react-navigation/native";
 import { Image } from "expo-image";
 import React, { useCallback, useContext } from "react";
@@ -23,12 +20,12 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { PopupContext } from "../PopupProvider";
 import { userActions } from "../store/actions/slices/userSlice";
+import TruecallerLoginComponent from "../TrueCallerLoginComponent";
 import ButtonComponent from "./ButtonComponent";
 const { width, height } = Dimensions.get("window");
 
 const LoginScreen = () => {
   GoogleSignin.configure({
-    // This must MATCH the Web client ID from the Firebase Console exactly
     webClientId:
       "537567428840-d5gg04dr5uml8pdn3v1d6q63pn67qiqn.apps.googleusercontent.com",
   });
@@ -36,12 +33,12 @@ const LoginScreen = () => {
   const [userName, setUserName] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [loading, setLoading] = React.useState(false);
+  const [showEmailLogin, setShowEmailLogin] = React.useState(false);
   const [isRegisterFlow, setIsRegisterFlow] = React.useState(false);
   const ui = useSelector((state: any) => state);
-  const { showPopup } = useContext(PopupContext);
+  const { customAlert } = useContext(PopupContext);
 
   const navigation = useNavigation<any>();
-
   const { t, i18n } = useTranslation();
 
   const toggleLanguage = () => {
@@ -50,55 +47,54 @@ const LoginScreen = () => {
     setTimeout(() => {
       i18n.changeLanguage(newLang).then(() => {
         setLoading(false);
-      }); // This one line updates the WHOLE app
+      });
     }, 2000);
-  };
-
-  const signInWithGoogle = async () => {
-    try {
-      await GoogleSignin.hasPlayServices();
-      const response = await GoogleSignin.signIn();
-      if (response) {
-        alert(
-          "Google Sign-In successful! Welcome, " + JSON.stringify(response),
-        );
-        // setUserName(response?.data);
-      } else {
-        // sign in was cancelled by user
-      }
-    } catch (error) {
-      alert("Google Sign-In error: " + JSON.stringify(error));
-      // if (isErrorWithCode(error)) {
-      // switch (error?.code) {
-      // case statusCodes.IN_PROGRESS:
-      //   // operation (eg. sign in) already in progress
-      //   break;
-      // case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
-      //   // Android only, play services not available or outdated
-      //   break;
-      // default:
-      // some other error happened
-      // }
-    }
   };
 
   const dispatch = useDispatch();
 
   const handleLogin = useCallback(
-    async (firebaseUser: any) => {
+    async (
+      firebaseUser: any,
+      isFirstTimeSignup: boolean = false,
+      emailAsId?: string,
+    ) => {
       try {
         await AsyncStorage.setItem("userToken", "login-token");
+        // Use emailAsId (document ID) for Truecaller, fallback to UID for other methods
+        const userId = emailAsId;
+        let userData = await getUserData(userId);
 
-        // Fetch and set user data from Firestore to Redux
-        const userData = await getUserData(firebaseUser.uid);
-        if (userData) {
-          dispatch(userActions.setUserData(userData));
-          console.log("User data loaded to Redux:", userData);
+        // Check if user is new (no existing data) - add welcome bonus of 250
+        if (!userData) {
+          userData = {
+            id: userId,
+            uid: userId,
+            email: firebaseUser?.email || emailAsId,
+            mobileNumber: firebaseUser?.mobileNumber || null,
+            displayName: firebaseUser?.displayName || null,
+            walletBalance: 250, // Welcome bonus for new users
+            createdAt: new Date().toISOString(),
+          };
+          console.log("New user detected - adding welcome bonus of 250");
+
+          // Save new user data to Firebase
+          const { saveUserData } = await import("@/firebaseMethods");
+          await saveUserData(userId);
         }
+
+        dispatch(userActions.setUserData(userData));
+        console.log("User data loaded to Redux:", userData);
       } catch (e) {
         console.error("Failed to set token or load user data", e);
       }
-      navigation.navigate("location-permission");
+
+      if (isFirstTimeSignup) {
+        navigation.navigate("edit-profile");
+      } else {
+        setLoading(false);
+        navigation.navigate("location-permission");
+      }
     },
     [dispatch, navigation],
   );
@@ -109,7 +105,6 @@ const LoginScreen = () => {
   return (
     <View style={styles.container}>
       {loading && <Loader />}
-      {/* GIF Background */}
       <Image
         source={require("../video.gif")}
         style={[StyleSheet.absoluteFillObject, { opacity: 0.3 }]}
@@ -117,181 +112,177 @@ const LoginScreen = () => {
         recyclingKey="bg-gif"
       />
 
-      {/* Gradient Overlay */}
-      {/* <LinearGradient
-        colors={[
-          "rgba(10, 10, 10, 0.8)",
-          "rgba(45, 243, 23, 0.5)",
-          // "rgba(10, 10, 10, 0.9)",
-          "rgba(23, 23, 23, 0.8)",
-        ]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-        style={StyleSheet.absoluteFillObject}
-        pointerEvents="none"
-      /> */}
-
-      {/* UI Layer */}
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.keyboardContainer}
       >
         <View style={styles.card}>
           <ThemedText type="title" style={styles.title}>
-            {isRegisterFlow ? t("auth.createAccount") : t("auth.welcomeBack")}
+            {showEmailLogin
+              ? isRegisterFlow
+                ? t("auth.createAccount")
+                : t("auth.welcomeBack")
+              : t("auth.welcomeBack")}
           </ThemedText>
 
-          <TextInput
-            placeholder={t("placeholders.email")}
-            onChangeText={(e) => {
-              setUserName(e);
-            }}
-            maxLength={50}
-            style={styles.input}
-            placeholderTextColor="#888"
-            keyboardType="email-address"
-            autoCapitalize="none"
-            // --- The OS Triggers ---
-            textContentType="username" // iOS
-            autoComplete="email"
-          />
-
-          <TextInput
-            maxLength={50}
-            placeholder={
-              isRegisterFlow
-                ? t("placeholders.newPassword")
-                : t("placeholders.password")
-            }
-            onChangeText={(e) => {
-              setPassword(e);
-            }}
-            secureTextEntry
-            style={styles.input}
-            placeholderTextColor="#888"
-            // --- The OS Triggers ---
-            textContentType="password" // iOS
-            autoComplete="password" // Android
-          />
-          {isRegisterFlow && (
-            <TextInput
-              maxLength={50}
-              placeholder={t("placeholders.reEnterPassword")}
-              onChangeText={(e) => {
-                setPassword(e);
-              }}
-              secureTextEntry
-              style={styles.input}
-              placeholderTextColor="#888"
-            />
-          )}
-
-          <View style={{ height: 10 }} />
-          <View style={styles.buttonContainer}>
-            {!isRegisterFlow && (
-              <ButtonComponent
-                onPress={() => {
-                  if (!userName || !password) {
-                    showPopup("title", t("alerts.pleaseEnterUserPassword"), [
-                      {
-                        title: "OK",
-                        onPress: (e: any) => e.close(),
-                      },
-                    ]);
-                    // alert();
-                    return;
-                  }
-                  setLoading(true);
-                  login(userName, password)
-                    .then((val) => {
-                      handleLogin(val);
-                      setLoading(false);
-                    })
-                    .catch((error) => {
-                      setLoading(false);
-                      alert(t("alerts.loginFailed") + error);
-                    });
-                }}
-                text={t("auth.login")}
+          {showEmailLogin ? (
+            <>
+              <TextInput
+                placeholder={t("placeholders.email")}
+                onChangeText={setUserName}
+                maxLength={50}
+                style={styles.input}
+                placeholderTextColor="#888"
+                keyboardType="email-address"
+                autoCapitalize="none"
+                textContentType="username"
+                autoComplete="email"
               />
-            )}
-            <View style={{ marginTop: 10 }} />
-            {isRegisterFlow ? (
-              <ButtonComponent
-                onPress={() => {
-                  alert("State Values : " + JSON.stringify(ui));
-                  return;
-                  // if (!userName || !password) {
-                  //   alert(t("alerts.pleaseEnterEmailPassword"));
-                  //   return;
-                  // }
-                  // setLoading(true);
-                  // signup(userName, password)
-                  //   .then((val) => {
-                  //     setLoading(false);
-                  //     setIsRegisterFlow(false);
-                  //     alert(t("alerts.loggedInSuccessfully") + val);
-                  //   })
-                  //   .catch((error) => {
-                  //     setLoading(false);
-                  //     alert(t("alerts.loginFailed") + error);
-                  //   });
-                }}
-                color="green"
-                text={t("auth.register")}
+
+              <TextInput
+                maxLength={50}
+                placeholder={
+                  isRegisterFlow
+                    ? t("placeholders.newPassword")
+                    : t("placeholders.password")
+                }
+                onChangeText={setPassword}
+                secureTextEntry
+                style={styles.input}
+                placeholderTextColor="#888"
+                textContentType="password"
+                autoComplete="password"
               />
-            ) : (
-              <Pressable
-                style={{
-                  width: 200,
-                  height: 50,
-                  borderRadius: 18,
-                  justifyContent: "center",
-                  borderWidth: 1,
-                  borderColor: "grey",
-                  backgroundColor: "#171717",
-                }}
-                onPress={() => {
-                  setIsRegisterFlow(true);
-                }}
-              >
-                <Text
-                  style={{
-                    color: "white",
-                    fontSize: 16,
-                    fontWeight: "500",
-                    textAlign: "center",
+
+              {isRegisterFlow && (
+                <TextInput
+                  maxLength={50}
+                  placeholder={t("placeholders.reEnterPassword")}
+                  onChangeText={setPassword}
+                  secureTextEntry
+                  style={styles.input}
+                  placeholderTextColor="#888"
+                />
+              )}
+
+              <View style={{ height: 10 }} />
+
+              {isRegisterFlow ? (
+                <ButtonComponent
+                  onPress={() => {
+                    alert("State Values : " + JSON.stringify(ui));
                   }}
-                >
-                  {t("auth.signup")}
+                  color="green"
+                  text={t("auth.register")}
+                />
+              ) : (
+                <ButtonComponent
+                  onPress={() => {
+                    if (!userName || !password) {
+                      customAlert(
+                        "title",
+                        t("alerts.pleaseEnterUserPassword"),
+                        [{ title: "OK", onPress: (e: any) => e.close() }],
+                      );
+                      return;
+                    }
+                    setLoading(true);
+                    login(userName, password)
+                      .then((val) => {
+                        handleLogin(val);
+                        // setLoading(false);
+                      })
+                      .catch((error) => {
+                        setLoading(false);
+                        alert(t("alerts.loginFailed") + error);
+                      });
+                  }}
+                  text={t("auth.login")}
+                />
+              )}
+
+              <Pressable
+                style={styles.toggleButton}
+                onPress={() => setIsRegisterFlow(!isRegisterFlow)}
+              >
+                <Text style={styles.toggleText}>
+                  {isRegisterFlow
+                    ? t("auth.alreadyHaveAccount")
+                    : t("auth.dontHaveAccount")}
+                  <Text style={styles.toggleTextHighlight}>
+                    {isRegisterFlow ? t("auth.login") : t("auth.signup")}
+                  </Text>
                 </Text>
               </Pressable>
-            )}
-            <Pressable
-              onPress={() => {
-                // navigation.navigate("");
-                navigation.navigate("worker-registration");
-              }}
-            >
-              <ThemedText
-                type="default"
-                style={{ fontSize: 20, marginTop: 20 }}
+
+              <Pressable
+                style={styles.backButton}
+                onPress={() => {
+                  setShowEmailLogin(false);
+                  setIsRegisterFlow(false);
+                }}
               >
-                {t("auth.joinUs")}
-              </ThemedText>
-            </Pressable>
-            <GoogleSigninButton
-              onPress={signInWithGoogle}
-              style={{ borderRadius: 20, width: 160, marginTop: 10 }}
-            />
-            <Pressable style={{ marginTop: 10 }} onPress={toggleLanguage}>
-              <ThemedText type="link">
-                {isEnglish
-                  ? "భాషను తెలుగులోకి మార్చండి"
-                  : "Change Language to English"}
-              </ThemedText>
-            </Pressable>
-          </View>
+                <Text style={styles.backButtonText}>
+                  ← {t("auth.backToLoginOptions")}
+                </Text>
+              </Pressable>
+            </>
+          ) : (
+            <>
+              {/* Truecaller Login */}
+              <View style={styles.truecallerContainer}>
+                <TruecallerLoginComponent
+                  callback={(s: any) => {
+                    const obj = {
+                      ...s,
+                      mobileNumber: s.phoneNumber,
+                      displayName: s.firstName + " " + s.lastName,
+                      email: s.email,
+                    };
+                    console.log("Truecaller callback data: ", s);
+                    setLoading(true);
+                    processTruecallerAuth(obj, handleLogin);
+                  }}
+                />
+              </View>
+
+              {/* Divider */}
+              <View style={styles.dividerContainer}>
+                <View style={styles.dividerLine} />
+                <Text style={styles.dividerText}>
+                  {t("auth.orContinueWith")}
+                </Text>
+                <View style={styles.dividerLine} />
+              </View>
+
+              {/* Login with Email */}
+              <Pressable
+                style={styles.emailLoginButton}
+                onPress={() => setShowEmailLogin(true)}
+              >
+                <Text style={styles.emailLoginButtonText}>
+                  📧 {t("auth.loginWithEmail")}
+                </Text>
+              </Pressable>
+            </>
+          )}
+
+          {/* Join Us */}
+          <Pressable
+            style={styles.joinUsButton}
+            onPress={() => navigation.navigate("worker-registration")}
+          >
+            <Text style={styles.joinUsButtonText}>{t("auth.joinUs")}</Text>
+          </Pressable>
+
+          {/* Language Toggle */}
+          <Pressable style={styles.languageToggle} onPress={toggleLanguage}>
+            <ThemedText type="link">
+              {isEnglish
+                ? "భాషను తెలుగులోకి మార్చండి"
+                : "Change Language to English"}
+            </ThemedText>
+          </Pressable>
         </View>
       </KeyboardAvoidingView>
     </View>
@@ -348,9 +339,91 @@ const styles = StyleSheet.create({
     color: "#fff",
     backgroundColor: "rgba(0, 0, 0, 0.4)",
   },
-  buttonContainer: {
+  toggleButton: {
+    marginTop: 16,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+  },
+  toggleText: {
+    color: "#aaa",
+    fontSize: 14,
+    textAlign: "center",
+  },
+  toggleTextHighlight: {
+    color: "#fff",
+    fontWeight: "600",
+  },
+  backButton: {
+    marginTop: 12,
+    paddingVertical: 8,
+    alignSelf: "center",
+  },
+  backButtonText: {
+    color: "#888",
+    fontSize: 14,
+  },
+  truecallerContainer: {
     alignItems: "center",
-    marginTop: 10,
+    justifyContent: "center",
+    marginBottom: 8,
+  },
+  dividerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: "100%",
+    marginVertical: 20,
+    paddingHorizontal: 10,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: "rgba(255, 255, 255, 0.15)",
+  },
+  dividerText: {
+    color: "#888",
+    fontSize: 12,
+    marginHorizontal: 12,
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+  },
+  emailLoginButton: {
+    width: "100%",
+    height: 50,
+    borderRadius: 18,
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 1.5,
+    borderColor: "rgba(255, 255, 255, 0.25)",
+    backgroundColor: "rgba(255, 255, 255, 0.05)",
+    marginBottom: 16,
+  },
+  emailLoginButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "500",
+    textAlign: "center",
+  },
+  joinUsButton: {
+    width: "100%",
+    height: 50,
+    borderRadius: 18,
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 1.5,
+    borderColor: "rgba(255, 255, 255, 0.25)",
+    backgroundColor: "rgba(255, 255, 255, 0.05)",
+    marginTop: 8,
+  },
+  joinUsButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
+    textAlign: "center",
+  },
+  languageToggle: {
+    marginTop: 20,
+    paddingVertical: 8,
+    alignSelf: "center",
   },
 });
 

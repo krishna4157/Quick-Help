@@ -77,3 +77,55 @@ export const triggerTargetedNotifications = async (
     alert("Failed to send notifications.");
   }
 };
+
+export const triggerUserNotifications = async (title, bodyMessage) => {
+  try {
+    // 1. Query the 'users' collection instead of 'providers'
+    const usersRef = collection(db, "users");
+    const querySnapshot = await getDocs(query(usersRef));
+
+    if (querySnapshot.empty) {
+      console.log("No users found to notify.");
+      return;
+    }
+
+    // 2. Build the notification payload array
+    let messages = [];
+    querySnapshot.forEach((doc) => {
+      const user = doc.data();
+      console.log("PUSH TOKENS : ", user.pushToken);
+      // Ensure the user actually has a valid Expo push token
+      if (user.pushToken && user.pushToken.includes("ExponentPushToken")) {
+        messages.push({
+          to: user.pushToken,
+          sound: "default",
+          title: title || "DeliveryApp Update",
+          body: bodyMessage || "Check out our new services!",
+          channelId: "default", // Required for Android
+          data: { notificationType: "marketing" },
+        });
+      }
+    });
+
+    if (messages.length === 0) {
+      console.log("Found users, but none have valid push tokens.");
+      return;
+    }
+
+    // 3. Send the bulk push request to Expo
+    const response = await fetch("https://exp.host/--/api/v2/push/send", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Accept-encoding": "gzip, deflate",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(messages),
+    });
+
+    const result = await response.json();
+    console.log("User push notifications sent successfully:", result);
+  } catch (error) {
+    console.error("Error triggering user notifications:", error);
+  }
+};

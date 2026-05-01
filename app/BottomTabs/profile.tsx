@@ -1,16 +1,17 @@
 import { ThemedCard } from "@/components/themed-card";
+import { useColorScheme } from "@/components/themed-color";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { ThemeModal } from "@/components/ThemeModal";
 import { logout } from "@/firebaseMethods";
-import { useColorScheme } from "@/hooks/use-color-scheme";
 import Loader from "@/Loader";
+import { PopupContext } from "@/PopupProvider";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import React, { useContext, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Alert, FlatList, Pressable, StyleSheet, View } from "react-native";
+import { FlatList, Pressable, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useDispatch, useSelector } from "react-redux";
 import { userActions } from "../../store/actions/slices/userSlice";
@@ -24,6 +25,7 @@ export default function ProfileScreen() {
   const navigation = useNavigation<any>();
   const dispatch = useDispatch();
   const { t, i18n } = useTranslation();
+  const { customAlert } = useContext(PopupContext);
   const biometricEnabled = useSelector(
     (state: any) => state.user.data?.biometricEnabled ?? false,
   );
@@ -43,6 +45,11 @@ export default function ProfileScreen() {
       id: "edit-profile",
       name: t("profile.editProfile"),
       icon: "person-outline",
+    },
+    {
+      id: "service-registration",
+      name: "service registration",
+      icon: "persom-outline",
     },
     {
       id: "change-language",
@@ -83,7 +90,10 @@ export default function ProfileScreen() {
     switch (id) {
       case "edit-profile":
         navigation.navigate("edit-profile" as any);
-        // Alert.alert("Edit Profile", "Edit profile details");
+        // customAlert("Edit Profile", "Edit profile details");
+        break;
+      case "service-registration":
+        navigation.navigate("service-registration");
         break;
       case "wallet":
         navigation.navigate("wallet" as any);
@@ -96,12 +106,12 @@ export default function ProfileScreen() {
         // setThemeModalVisible(true);
         break;
       case "my-address":
-        Alert.alert("My Address", "Manage delivery addresses");
+        customAlert("My Address", "Manage delivery addresses");
         break;
       case "biometrics":
         const newBiometricState = !biometricEnabled;
         dispatch(userActions.updateBiometricEnabled(newBiometricState));
-        Alert.alert(
+        customAlert(
           t("profile.enableBiometrics"),
           newBiometricState
             ? "Biometrics enabled successfully"
@@ -109,7 +119,7 @@ export default function ProfileScreen() {
         );
         break;
       case "help":
-        Alert.alert("Help", "Contact support or FAQ");
+        customAlert("Help", "Contact support or FAQ");
         break;
       case "theme":
         setThemeModalVisible(true);
@@ -118,7 +128,7 @@ export default function ProfileScreen() {
         navigation.navigate("worker-registration" as any);
         break;
       case "about":
-        Alert.alert("About", "App information and version");
+        customAlert("About", "App information and version");
         break;
       case "logout":
         setLoading(true);
@@ -133,25 +143,27 @@ export default function ProfileScreen() {
             setLoading(false);
             navigation.navigate("login");
 
-            alert("Logged out successfully!");
+            customAlert("Message", "Logged out successfully!");
           })
           .catch((error) => {
             setLoading(false);
-            alert("Logout failed: " + error);
+            customAlert("Logout failed: " + error);
           });
 
         break;
     }
   };
 
-  const finalColor =
-    theme === "system"
-      ? colorScheme === "dark"
-        ? "white"
-        : "black"
-      : theme === "dark"
-        ? "white"
-        : "black";
+  // alert(colorScheme);
+
+  // const finalColor =
+  //   theme === "system"
+  //     ? colorScheme === "dark"
+  //       ? "white"
+  //       : "black"
+  //     : theme === "dark"
+  //       ? "white"
+  //       : "black";
 
   const renderItem = ({ item }: { item: (typeof profileItems)[0] }) => (
     <Pressable onPress={() => handleItemPress(item.id)}>
@@ -162,7 +174,11 @@ export default function ProfileScreen() {
         ]}
       >
         <View style={styles.cardContent}>
-          <MaterialIcons name={item.icon as any} size={24} color={finalColor} />
+          <MaterialIcons
+            name={item.icon as any}
+            size={24}
+            color={colorScheme == "dark" ? "white" : "black"}
+          />
           <ThemedText style={styles.cardText}>{item.name}</ThemedText>
         </View>
       </ThemedCard>
@@ -172,14 +188,6 @@ export default function ProfileScreen() {
   return (
     <ThemedView style={styles.container}>
       <SafeAreaView edges={["top"]} style={{ flex: 1 }}>
-        <Pressable
-          onPress={() => {
-            //
-            // customAlert("HELLO")
-          }}
-        >
-          <ThemedText>Test Popup</ThemedText>
-        </Pressable>
         {loading && <Loader />}
 
         <FlatList
